@@ -8,18 +8,14 @@ from transformers import AutoTokenizer
 import onnxruntime as ort
 import numpy as np
 
+
 class SentimentModel:
     MODEL_PATH = "/app/model"
 
     def __init__(self):
-        self.is_loaded = False
-        try:
-            self.tokenizer = AutoTokenizer.from_pretrained(self.MODEL_PATH)
-            self.session = ort.InferenceSession(f"{self.MODEL_PATH}/model.onnx")
-            self.labels = ["negative", "positive"]
-            self.is_loaded = True
-        except Exception:
-            pass
+        self.tokenizer = AutoTokenizer.from_pretrained(self.MODEL_PATH)
+        self.session = ort.InferenceSession(f"{self.MODEL_PATH}/model.onnx")
+        self.labels = ["negative", "positive"]
 
     def predict(self, text: str) -> dict:
         inputs = self.tokenizer(text, return_tensors="np", truncation=True)
@@ -30,4 +26,3 @@ class SentimentModel:
             "label": self.labels[idx],
             "score": round(float(scores[0][idx]), 4),
         }
-    

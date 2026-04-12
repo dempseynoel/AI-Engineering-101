@@ -1,800 +1,956 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document Title</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-  /* ============================================================
-     THEME TOKENS — edit these to reskin the whole document
-     ============================================================ */
-  :root {
-    --bg: #0f1117;
-    --surface: #181b24;
-    --surface-2: #1e2230;
-    --border: #2a2f3e;
-    --text: #c9cdd8;
-    --text-dim: #7a8194;
-    --text-bright: #e8ecf4;
-    --accent: #5b9cf5;
-    --accent-dim: #3a6db5;
-    --green: #6bc86b;
-    --orange: #e89b4e;
-    --red: #e06060;
-    --purple: #b48eda;
-    --code-bg: #12141c;
-    --step-line: #2a2f3e;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Title</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       THEME TOKENS — edit these to reskin the whole document
+       ============================================================ */
+    :root {
+      --bg: #0f1117;
+      --surface: #181b24;
+      --surface-2: #1e2230;
+      --border: #2a2f3e;
+      --text: #c9cdd8;
+      --text-dim: #7a8194;
+      --text-bright: #e8ecf4;
+      --accent: #5b9cf5;
+      --accent-dim: #3a6db5;
+      --green: #6bc86b;
+      --orange: #e89b4e;
+      --red: #e06060;
+      --purple: #b48eda;
+      --code-bg: #12141c;
+      --step-line: #2a2f3e;
+    }
 
-  /* ============================================================
-     RESET & BASE
-     ============================================================ */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Ubuntu', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    padding: 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
+    body {
+      font-family: 'Ubuntu', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-  /* ============================================================
-     HEADER
-     ============================================================ */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 2rem;
-    margin-bottom: 3rem;
-  }
+    /* ============================================================
+       HEADER
+       ============================================================ */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+      margin-bottom: 3rem;
+    }
 
-  header .series-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-  }
+    header .series-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
 
-  header h1 {
-    font-family: 'Lora', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-bright);
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
+    header h1 {
+      font-family: 'Lora', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
 
-  header .subtitle {
-    color: var(--text-dim);
-    font-style: italic;
-    font-size: 1.05rem;
-  }
+    header .subtitle {
+      color: var(--text-dim);
+      font-style: italic;
+      font-size: 1.05rem;
+    }
 
-  /* ============================================================
-     PROSE — paragraphs, inline code, links
-     ============================================================ */
-  p {
-    font-size: 0.95rem;
-    color: var(--text-dim);
-    margin-bottom: 0.75rem;
-    line-height: 1.7;
-  }
+    /* ============================================================
+       PROSE — paragraphs, inline code, links
+       ============================================================ */
+    p {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+      line-height: 1.7;
+    }
 
-  p.lead {
-    font-size: 1.05rem;
-    color: var(--text);
-  }
+    p.lead {
+      font-size: 1.05rem;
+      color: var(--text);
+    }
 
-  a {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
-  }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
 
-  a:hover {
-    border-bottom-color: var(--accent);
-  }
+    a:hover {
+      border-bottom-color: var(--accent);
+    }
 
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    background: var(--code-bg);
-    padding: 0.15em 0.4em;
-    border-radius: 3px;
-    color: var(--accent);
-  }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      color: var(--accent);
+    }
 
-  strong {
-    color: var(--text-bright);
-    font-weight: 400;
-  }
+    strong {
+      color: var(--text-bright);
+      font-weight: 400;
+    }
 
-  em {
-    font-style: italic;
-  }
+    em {
+      font-style: italic;
+    }
 
-  /* ============================================================
-     HEADINGS — use for free-form sections (non-phased content)
-     ============================================================ */
-  h2 {
-    font-family: 'Lora', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--text-bright);
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-  }
+    /* ============================================================
+       HEADINGS — use for free-form sections (non-phased content)
+       ============================================================ */
+    h2 {
+      font-family: 'Lora', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
 
-  h3 {
-    font-family: 'Lora', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-top: 1.75rem;
-    margin-bottom: 0.75rem;
-  }
+    h3 {
+      font-family: 'Lora', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
 
-  /* ============================================================
-     LISTS
-     ============================================================ */
-  ul, ol {
-    padding-left: 1.5rem;
-    margin-bottom: 1rem;
-  }
+    /* ============================================================
+       LISTS
+       ============================================================ */
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
 
-  li {
-    font-size: 0.95rem;
-    color: var(--text-dim);
-    margin-bottom: 0.4rem;
-    line-height: 1.6;
-  }
+    li {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+      line-height: 1.6;
+    }
 
-  li code {
-    font-size: 0.82rem;
-  }
+    li code {
+      font-size: 0.82rem;
+    }
 
-  /* ============================================================
-     PREREQUISITE / INFO BOX
-     ============================================================ */
-  .prereq {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--orange);
-    border-radius: 6px;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 2rem;
-  }
+    /* ============================================================
+       PREREQUISITE / INFO BOX
+       ============================================================ */
+    .prereq {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
 
-  .prereq h3 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--orange);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 0;
-    margin-bottom: 0.75rem;
-  }
+    .prereq h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+    }
 
-  /* ============================================================
-     PHASES — numbered sections with timeline steps
-     ============================================================ */
-  .phase {
-    margin-bottom: 3.5rem;
-  }
+    /* ============================================================
+       PHASES — numbered sections with timeline steps
+       ============================================================ */
+    .phase {
+      margin-bottom: 3.5rem;
+    }
 
-  .phase-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
 
-  .phase-number {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--bg);
-    background: var(--accent);
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+    .phase-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--accent);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
-  .phase-title {
-    font-family: 'Lora', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--text-bright);
-  }
+    .phase-title {
+      font-family: 'Lora', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
 
-  /* ============================================================
-     STEPS — individual items within a phase
-     ============================================================ */
-  .step {
-    position: relative;
-    padding-left: 2.5rem;
-    margin-bottom: 2rem;
-  }
+    /* ============================================================
+       STEPS — individual items within a phase
+       ============================================================ */
+    .step {
+      position: relative;
+      padding-left: 2.5rem;
+      margin-bottom: 2rem;
+    }
 
-  .step::before {
-    content: '';
-    position: absolute;
-    left: 13px;
-    top: 28px;
-    bottom: -24px;
-    width: 1px;
-    background: var(--step-line);
-  }
+    .step::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 28px;
+      bottom: -24px;
+      width: 1px;
+      background: var(--step-line);
+    }
 
-  .step:last-child::before {
-    display: none;
-  }
+    .step:last-child::before {
+      display: none;
+    }
 
-  .step-dot {
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    border: 2px solid var(--accent-dim);
-    background: var(--bg);
-  }
+    .step-dot {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-dim);
+      background: var(--bg);
+    }
 
-  .step h4 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--text-bright);
-    margin-bottom: 0.5rem;
-  }
+    .step h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+    }
 
-  .step p.explain {
-    font-style: italic;
-    color: var(--text-dim);
-    font-size: 0.9rem;
-  }
+    .step p.explain {
+      font-style: italic;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
 
-  /* ============================================================
-     CODE BLOCKS
-     ============================================================ */
-  .cmd-block {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem 1.25rem;
-    margin: 0.75rem 0;
-    overflow-x: auto;
-    position: relative;
-  }
+    /* ============================================================
+       CODE BLOCKS
+       ============================================================ */
+    .cmd-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      position: relative;
+    }
 
-  .cmd-block .lang-tag {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    opacity: 0.6;
-  }
+    .cmd-block .lang-tag {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+    }
 
-  .cmd-block pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    line-height: 1.8;
-    white-space: pre;
-    color: var(--text);
-  }
+    .cmd-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      white-space: pre;
+      color: var(--text);
+    }
 
-  /* Syntax highlighting classes for code blocks */
-  .comment  { color: var(--text-dim); font-style: italic; }
-  .prompt   { color: var(--green); user-select: none; }
-  .flag     { color: var(--purple); }
-  .value    { color: var(--orange); }
-  .cmd-name { color: var(--accent); }
+    /* Syntax highlighting classes for code blocks */
+    .comment  { color: var(--text-dim); font-style: italic; }
+    .prompt   { color: var(--green); user-select: none; }
+    .flag     { color: var(--purple); }
+    .value    { color: var(--orange); }
+    .cmd-name { color: var(--accent); }
 
-  /* ============================================================
-     YAML BLOCKS — same style, different syntax colours
-     ============================================================ */
-  .yaml-block {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem 1.25rem;
-    margin: 0.75rem 0;
-    overflow-x: auto;
-    position: relative;
-  }
+    /* ============================================================
+       YAML BLOCKS — same style, different syntax colours
+       ============================================================ */
+    .yaml-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      position: relative;
+    }
 
-  .yaml-block .lang-tag {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    opacity: 0.6;
-  }
+    .yaml-block .lang-tag {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+    }
 
-  .yaml-block pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    line-height: 1.8;
-    white-space: pre;
-    color: var(--text);
-  }
+    .yaml-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      white-space: pre;
+      color: var(--text);
+    }
 
-  .yaml-key     { color: var(--accent); }
-  .yaml-val     { color: var(--orange); }
-  .yaml-comment { color: var(--text-dim); font-style: italic; }
+    .yaml-key     { color: var(--accent); }
+    .yaml-val     { color: var(--orange); }
+    .yaml-comment { color: var(--text-dim); font-style: italic; }
 
-  /* ============================================================
-     CALLOUT NOTES
-     Variants: default (blue), .warn (orange), .tip (green)
-     ============================================================ */
-  .note {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    padding: 1rem 1.25rem;
-    margin: 1rem 0;
-  }
+    /* ============================================================
+       CALLOUT NOTES
+       Variants: default (blue), .warn (orange), .tip (green)
+       ============================================================ */
+    .note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
 
-  .note.warn  { border-left-color: var(--orange); }
-  .note.tip   { border-left-color: var(--green); }
+    .note.warn  { border-left-color: var(--orange); }
+    .note.tip   { border-left-color: var(--green); }
 
-  .note .note-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.4rem;
-  }
+    .note .note-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+    }
 
-  .note.warn .note-label { color: var(--orange); }
-  .note.tip  .note-label { color: var(--green); }
+    .note.warn .note-label { color: var(--orange); }
+    .note.tip  .note-label { color: var(--green); }
 
-  .note p {
-    font-size: 0.9rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-    margin-bottom: 0;
-  }
+    .note p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
 
-  /* ============================================================
-     TABLES
-     ============================================================ */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0 1.5rem;
-    font-size: 0.9rem;
-  }
+    /* ============================================================
+       TABLES
+       ============================================================ */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
 
-  th {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-bright);
-    background: var(--surface);
-    text-align: left;
-    padding: 0.75rem 1rem;
-    border-bottom: 2px solid var(--border);
-  }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-bright);
+      background: var(--surface);
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border);
+    }
 
-  td {
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-dim);
-  }
+    td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dim);
+    }
 
-  tr:hover td {
-    background: var(--surface);
-  }
+    tr:hover td {
+      background: var(--surface);
+    }
 
-  /* ============================================================
-     DANGER / CLEANUP BOX
-     ============================================================ */
-  .danger {
-    border: 1px solid var(--red);
-    border-radius: 6px;
-    padding: 1.25rem 1.5rem;
-    margin: 2rem 0;
-    background: rgba(224, 96, 96, 0.05);
-  }
+    /* ============================================================
+       DANGER / CLEANUP BOX
+       ============================================================ */
+    .danger {
+      border: 1px solid var(--red);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      background: rgba(224, 96, 96, 0.05);
+    }
 
-  .danger h4 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--red);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.75rem;
-  }
+    .danger h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
 
-  /* ============================================================
-     BADGES — small labels for status, tags, etc.
-     ============================================================ */
-  .badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    padding: 0.2em 0.6em;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: inline-block;
-    vertical-align: middle;
-  }
+    /* ============================================================
+       BADGES — small labels for status, tags, etc.
+       ============================================================ */
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.2em 0.6em;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-block;
+      vertical-align: middle;
+    }
 
-  .badge.blue   { background: rgba(91,156,245,0.15); color: var(--accent); }
-  .badge.green  { background: rgba(107,200,107,0.15); color: var(--green); }
-  .badge.orange { background: rgba(232,155,78,0.15);  color: var(--orange); }
-  .badge.red    { background: rgba(224,96,96,0.15);   color: var(--red); }
-  .badge.purple { background: rgba(180,142,218,0.15); color: var(--purple); }
+    .badge.blue   { background: rgba(91,156,245,0.15); color: var(--accent); }
+    .badge.green  { background: rgba(107,200,107,0.15); color: var(--green); }
+    .badge.orange { background: rgba(232,155,78,0.15);  color: var(--orange); }
+    .badge.red    { background: rgba(224,96,96,0.15);   color: var(--red); }
+    .badge.purple { background: rgba(180,142,218,0.15); color: var(--purple); }
 
-  /* ============================================================
-     DIVIDERS
-     ============================================================ */
-  hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 3rem 0;
-  }
+    /* ============================================================
+       DIVIDERS
+       ============================================================ */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
 
-  /* ============================================================
-     FOOTER
-     ============================================================ */
-  footer {
-    margin-top: 4rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    font-style: italic;
-  }
-</style>
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
 
-<!-- ============================================================
-     HEADER
-     Change the series label, title, and subtitle
-     ============================================================ -->
-<header>
-  <div class="series-label">Capgemini AI Engineering Training | Lab 1</div>
-  <h1>Docker for AI Engineers</h1>
-  <div class="subtitle">Docker from scratch: build, containerise, and deploy a real ML model end to end</div>
-</header>
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header>
+    <div class="series-label">Capgemini AI Engineering Training | Lab 1</div>
+    <h1>Docker for AI Engineers</h1>
+    <div class="subtitle">Docker from scratch: build, containerise, and deploy a real ML model end to end</div>
+  </header>
 
-
-<!-- ============================================================
-     PREREQUISITE BOX (optional)
-     Good for setup requirements, assumptions, etc.
-     ============================================================ -->
-<div class="prereq">
-  <h3>Prerequisites</h3>
-  <p><code>Docker Desktop</code> installed and running.</p>
-  <p><code>Python 3.11+</code> for local development (the container itself bundles its own Python).</p>
-  <p>A code editor such as <code>VS Code</code> with a terminal you're comfortable using.</p>
-  <p><code>Azure CLI</code> installed (<code>az</code>) and authenticated with an active Azure subscription (personal or Capgemini).</p>
-  <p><code>Git</code> installed, to clone the seminar repo containing the demo source files.</p>
-  <p>Familiarity with Python and basic command line usage is assumed. No prior Docker or Azure experience is needed - that's what we're here to learn!</p>
-</div>
-
-
-<!-- ============================================================
-     FREE-FORM SECTION
-     Use h2/h3 headings, paragraphs, lists, tables for non-step content
-     ============================================================ -->
-<h2>Seminar Overview</h2>
-<p>This lab introduces <code>Docker</code>  as the foundational tool for packaging and deploying AI/ML applications and models. As we data scientists transition into AI and ML engineering roles for our clients, the ability to ship models as reliable and reproducible services becomes essential.</p>
-<p>By the end of the lab we'll have used <code>Docker</code> to package a <code>FastAPI</code> sentiment analysis API (serving a real model via <code>ONNX</code>) into a container, deployed it to <code>Azure</code>, and have it as a live endpoint.</p>
-<p>We'll build the <code>Dockerfile</code> from scratch using multi-stage builds and <code>uv</code> for fast dependency installs, test locally, then push to <code>Azure Container Registry</code> and deploy on <code>Azure Container Apps</code>.</p>
-
-<h3>Learning Outcomes</h3>
-<p>By the end of this seminar, wel'll be able to:</p>
-<ul>
-  <li>Explain what <code>Docker</code> is and why it matters for AI engineering</li>
-  <li>Understand how a real model is integrated into a serving application</li>
-  <li>Write a <code>Dockerfile</code> for an AI/ML application with model dependencies</li>
-  <li>Build, run, and deploy a containerised <code>FastAPI</code> model endpoint to <code>Azure</code></li>
-</ul>
-
-<div class="note warn">
-  <div class="note-label">Docker vs Containerisation</div>
-  <p>We're using Docker and containerisation interchangeably here, although they aren't the same thing. Containerisation is the concept of isolating an application and its dependencies into a portable, self-contained unit that runs consistently across environments. Docker is a specific tool that implements that concept and made it accessible to the mainstream although there are alternatives, e.g. Podman. Just remember that when we talk about Docker, we're reffering to the whole concept of containerisation through Docker's specific approach.</p>
-</div>
-
-<h3>Agenda</h3>
-<!-- Example table -->
-<table>
-  <thead>
-    <tr>
-      <th>Topic</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>What is Docker, and why should I care?</td>
-      <td>Reproducibility crisis, dependency hell, “works on my machine”</td>
-    </tr>
-    <tr>
-      <td>Core Concepts</td>
-      <td>Dockerfiles, images, containers, layers, registries, tags, volumes, networks</td>
-    </tr>
-    <tr>
-      <td>Building our API</td>
-      <td>FastAPI + model, Dockerfile, build and run locally</td>
-    </tr>
-    <tr>
-      <td>Deploying to Azure</td>
-      <td>Pushing to ACR, deploying to Azure Container Apps</td>
-    </tr>
-    <tr>
-      <td>Troubleshooting and best practices</td>
-      <td>Multi-stage builds, .dockerignore, health checks, security</td>
-    </tr>
-    <tr>
-      <td>Q&A and wrap-up</td>
-      <td>Discussion, resources, preview of lab 2</td>
-    </tr>
-  </tbody>
-</table>
-<br>
-<!-- ============================================================
-     PHASED SECTION WITH STEPS
-     Copy this block for each numbered phase
-     ============================================================ -->
-<div class="phase">
-  <div class="phase-header">
-    <div class="phase-number">1</div>
-    <div class="phase-title">What is Docker, and why should I care?</div>
+  <!-- ============================================================
+       PREREQUISITE BOX
+       ============================================================ -->
+  <div class="prereq">
+    <h3>Prerequisites</h3>
+    <p><code>Docker Desktop</code> installed and running.</p>
+    <p><code>Python 3.11+</code> for local development (the container itself bundles its own Python).</p>
+    <p>A code editor such as <code>VS Code</code> with a terminal you're comfortable using.</p>
+    <p><code>Azure CLI</code> installed (<code>az</code>) and authenticated with an active Azure subscription (personal or Capgemini).</p>
+    <p><code>Git</code> installed, to clone the seminar repo containing the demo source files.</p>
+    <p>Familiarity with Python and basic command line usage is assumed. No prior Docker or Azure experience is needed - that's what we're here to learn!</p>
   </div>
 
-  <div class="step">
-    <div class="step-dot"></div>
-    <h4>The core problem: <em>"But it works on my machine..."</em></h4>
-    <p>Imagine you bake a cake in your kitchen and it turns out perfectly. You hand someone the recipe, but their oven runs hotter, their flour is a different brand, and they're missing one ingredient. They follow the same steps and get a completely different result. The process of trying to reliably deploy code, whether that's a simple application or a full AI and ML model, into production from your local development environment can be much like this cake analogy. </p>
-    <br>
-    <div style="text-align: center;">
-    <img src="it-works-on-my-machine.jpeg">
-    </div>
-    <br>
-    <p>A common problem we face arises when code behaves differently across machines due to mismatched Python or library versions. It might work on your machine, but not on someone elses. Things can get really complicated where projects have complex software stacks with strict version requirements such as TensorFlow tied to specific CUDA releases, or PyTorch conflicting with certain NumPy versions.</p>
-    <p>The solution? Ship the entire kitchen - oven, ingredients, and all - so the cake comes out the same every time, no matter where it's made. By containerising and packaging our code, libraries, and system dependencies Docker enables exact recreation of our runtime environments ensuring reproducibility whereever we run our code.</p>
-    <p>To summarise then, Docker helps with:</p>
-    <ul>
-      <li>Reproducibility: same Python version, same library versions, same OS, everywhere</li>
-      <li>Dependency isolation: your PyTorch 2.x app won't clash with another team's TensorFlow 1.x service</li>
-      <li>Environment parity: dev, staging, and production all run the exact same container</li>
-      <li>Scalability: containers are the unit of scaling in Kubernetes, Azure Container Apps, ECS, etc</li>
-    </ul>
+  <!-- ============================================================
+       LAB OVERVIEW
+       ============================================================ -->
+  <h2>Lab Overview</h2>
+  <p>This lab introduces <code>Docker</code> as the foundational tool for packaging and deploying AI/ML applications and models. As we data scientists transition into AI and ML engineering roles for our clients, the ability to ship models as reliable and reproducible services becomes essential.</p>
+  <p>By the end of the lab we'll have used <code>Docker</code> to package a <code>FastAPI</code> sentiment analysis API (serving a real model via <code>ONNX</code>) into a container, deployed it to <code>Azure</code>, and have it as a live endpoint.</p>
+  <p>We'll build the <code>Dockerfile</code> from scratch using multi-stage builds and <code>uv</code> for fast dependency installs, test locally, then push to <code>Azure Container Registry</code> and deploy on <code>Azure Container Apps</code>.</p>
 
-    <div class="note warn">
-      <div class="note-label">Why not just use venv or conda?</div>
-      <p>Becuase virtual environments only isolate Python packages. They do not isolate system libraries (like CUDA drivers), operating system differences (Windows vs Linux), or system-level dependencies.</p>
-    </div>
+  <h3>Learning Outcomes</h3>
+  <p>By the end of this seminar, we'll be able to:</p>
+  <ul>
+    <li>Explain what <code>Docker</code> is and why it matters for AI engineering</li>
+    <li>Understand how a real model is integrated into a serving application</li>
+    <li>Write a <code>Dockerfile</code> for an AI/ML application with model dependencies</li>
+    <li>Build, run, and deploy a containerised <code>FastAPI</code> model endpoint to <code>Azure</code></li>
+  </ul>
+
+  <div class="note warn">
+    <div class="note-label">Docker vs Containerisation</div>
+    <p>We're using Docker and containerisation interchangeably here, although they aren't the same thing. Containerisation is the concept of isolating an application and its dependencies into a portable, self-contained unit that runs consistently across environments. Docker is a specific tool that implements that concept and made it accessible to the mainstream although there are alternatives, e.g. Podman. Just remember that when we talk about Docker, we're referring to the whole concept of containerisation through Docker's specific approach.</p>
   </div>
-  <div class="step">
-    <div class="step-dot"></div>
-    <h4>Core Docker Architecture</h4>
-    <p>To containerise any of our code we need to understand some of the basics of how the Docker architecture interacts with each other: the <code>Docker Engine</code>(aka the daemon), the <code>Docker CLI</code>, and a <code>registry</code>.</p>
-    <p>The <code>Docker CLI</code> (client) sends commands to the <code>Docker Engine</code> (daemon), which does the heavy lifting of building images, starting containers, managing networks and volumes. When you type <code>docker build</code> or <code>docker run</code>, the CLI makes an API call to the daemon, which executes it and returns the result. Images are stored locally on your machine after being built or pulled, and can be pushed to a registry like <code>Docker Hub</code>or <code>Azure Container Registry</code> for sharing.</p>
+  <br>
 
-    <div class="note tip">
-      <div class="note-label">What's a daemon?</div>
-      <p>Pronounced "dee-mon". The background process that manages Docker objects - it listens for API requests from the CLI, and handles building images, running containers, managing networks, and storing volumes. You never interact with it directly; the CLI talks to it for you.</p>
+  <!-- ============================================================
+       PHASE 1 — What is Docker, and why should I care?
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">1</div>
+      <div class="phase-title">What is Docker, and why should I care?</div>
     </div>
 
-    <p><code>Docker Desktop</code> bundles the Engine and CLI together and gives you a GUI on top, which is what most people install locally (what we've used here), but underneath it's still the same CLI-to-daemon relationship.</p>
-    <p>Most of the time though, you'll be focusing on these three core elements and concepts of Docker: <code>dockerfiles</code>, <code>images</code>, and <code>containers</code>.</p>
-    <br>
-    <div style="text-align: center;">
-    <img src="docker-components.jpeg" style="max-width: 75%;">
-    </div>
-    <br>
-    <div class="note warn">
-      <div class="note-label">What about a Virtual Machine (VM)?</div>
-      <p>Virtual machines and containers both solve the problem of running software in an isolated environment, but they do it very differently. A VM virtualises an entire operating system — it runs a full guest OS, which means each VM carries its own kernel, system libraries, and binaries. This makes VMs heavy, typically gigabytes in size and taking minutes to boot. Containers take a lighter approach: they share the host machine's kernel and only package the application and its specific dependencies. The result is an isolated process that's megabytes rather than gigabytes, starts in seconds, and can be moved between machines with almost no friction</p>
-    </div>
-  </div>
-  
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>The core problem: <em>"But it works on my machine..."</em></h4>
+      <p>Imagine you bake a cake in your kitchen and it turns out perfectly. You hand someone the recipe, but their oven runs hotter, their flour is a different brand, and they're missing one ingredient. They follow the same steps and get a completely different result. The process of trying to reliably deploy code, whether that's a simple application or a full AI and ML model, into production from your local development environment can be much like this cake analogy.</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="it-works-on-my-machine.jpeg">
+      </div>
+      <br>
+      <p>A common problem we face arises when code behaves differently across machines due to mismatched Python or library versions. It might work on your machine, but not on someone else's. Things can get really complicated where projects have complex software stacks with strict version requirements such as TensorFlow tied to specific CUDA releases, or PyTorch conflicting with certain NumPy versions.</p>
+      <p>The solution? Ship the entire kitchen - oven, ingredients, and all - so the cake comes out the same every time, no matter where it's made. By containerising and packaging our code, libraries, and system dependencies Docker enables exact recreation of our runtime environments ensuring reproducibility wherever we run our code.</p>
+      <p>To summarise then, Docker helps with:</p>
+      <ul>
+        <li>Reproducibility: same Python version, same library versions, same OS, everywhere</li>
+        <li>Dependency isolation: your PyTorch 2.x app won't clash with another team's TensorFlow 1.x service</li>
+        <li>Environment parity: dev, staging, and production all run the exact same container</li>
+        <li>Scalability: containers are the unit of scaling in Kubernetes, Azure Container Apps, ECS, etc</li>
+      </ul>
 
-  <div class="phase-header">
-    <div class="phase-number">2</div>
-    <div class="phase-title">Dockerfiles</div>
-  </div>
-  <div class="step">
-  <div class="step-dot"></div>
-    <h4>What are they?</h4>
-    <p>This is a text file that contains all the instructions and commands needed to build an image. This file adheres to specific format and set of instruction to build the required docker image. But a Dockerfile is not just a setup script - it's a contract.</p>
-    <p>The Dockerfile explicitly answers the question: "What must exist for my application to run?"</p>
-    <p>When you write a Dockerfile, you are documenting your assumptions in executable an form. Every instruction in a Dockerfile exists because something once broke without it. Missing system libraries. Wrong Python version. A dependency that worked locally but failed in CI. Dockerfiles are written in the blood of past outages and failed builds.</p>
-  </div>
-  <div class="step">
-  <div class="step-dot"></div>
-    <h4>Anatomy of a Dockerfile</h4>
-    <p>When we write a Dockerfile, we've got to think about how Docker builds images in layers, and how each instruction in our Dockefile creates a new one. When you rebuild an image, Docker checks each layer from top to bottom: if nothing has changed in that layer or any layer before it, it reuses the cached version and skips the work. The moment something changes, that layer and everything below it gets rebuilt from scratch. This is why ordering your Dockerfile carefully can mean the difference between a five second rebuild and a five minute one.</p>
-
-    <p>We'll be exploring our own Dockerfile in a moment, but in the meantime here are some of the key commands you'll almost always come across in <em>any</em> Dockerfile.</p>
-
-    <h3><code>FROM</code></h3>
-    <p>Every Dockerfile starts with this command which sets the base image you're building on top of. You'll typically be pulling a base image from somewhere like <a href="https://hub.docker.com/search?badges=official">Docker Hub</a> and its' list of official images. Without a base image, you'd have to set up the operating system, install Python, configure paths, and handle all the low-level plumbing yourself.</p>
-
-    <div class="note">
-      <div class="note-label">Note</div>
-      <p>Base images range from bare-bones to full-featured. <code>alpine</code> is tiny (around 5MB) but can cause compatibility issues with Python packages that expect standard Linux libraries. <code>slim</code> variants like <code>python:3.xx-slim</code> strike a good balance — small enough to keep your image lean, complete enough that most packages install without fuss. The full python images include compilers and build tools, which is useful if your dependencies need to compile C extensions during install, but adds significant size.</p>
-    </div>
-
-    <h3><code>WORKDIR</code></h3>
-    <p>Sets the working directory inside the container. Every command that follows runs relative to this path. Think of it like running <code>cd /path/to/somewhere</code> on the command line.</p>
-
-    <h3><code>COPY</code></h3>
-    <p>Brings files from your local machine into the image, and this is where ordering the image layers becomes critical. Typically, we deliberately want to copy our package dependencies, e.g. <code>requirements.txt</code>, and install them on their own before copying the rest of our application code.</p>
-    <p>The reason: once we've copied in the requirements and installed them Docker will cache that entire installation layer. As long as our <code>requirements.txt</code> hasn't changed, Docker skips the install entirely on subsequent builds.</p>
-    <div class="note warn">
-      <div class="note-label">Think about your layering!</div>
-          <p>If we copied all the code first and then installed dependencies, changing a single line of application code (not matter how small or trivial) would invalidate the entire cache and force a full reinstall of every package which can take a very long time to rebuild.</p>
-    </div>
-
-    <h3><code>RUN</code></h3>
-    <p>Executes commands during the build process. This is where you install dependencies, e.g. <code>RUN uv pip install -r requirements.txt</code>, install system packages (<code>RUN apt-get install</code>), or run any setup scripts. Each <code>RUN</code> instruction creates a layer, so it's common to chain related commands together with <code>&&</code> to keep the layer count down.</p>
-
-    <h3><code>EXPOSE</code></h3>
-    <p>Documents which port your application listens on. It doesn't actually publish the port but it signals to anyone reading the Dockerfile (or to orchestration tools) what port to expect.</p>
-
-    <div class="note tip">
-      <div class="note-label">Container Ports</div>
-      <p>Think of a container as a room with no doors. The app inside is listening on a given port that we expose (very commonly port 8000), but nothing can reach it. When we eventually run our container we need to cut a door between our machine and the container, connecting the two. We do this with the CLI command <code>docker run -p our_port_number:the_container_port_number</code>. It's common for these match, e.g. <code>8000:8000</code>, but they don't have to. Just remember that the port on the right side has to match what you say is exposed in the Dockerfile.</p>
-    </div>
-
-    <h3><code>CMD</code></h3>
-    <p>Defines the default command that runs when a container starts from the image. Very commonly, this will be some sort of command that actually begins your application.</p>
-  </div>
-
-  <div class="phase-header">
-    <div class="phase-number">3</div>
-    <div class="phase-title">Docker Images</div>
-  </div>
-  <div class="step">
-  <div class="step-dot"></div>
-    <h4>What are they?</h4>
-    <p>A Docker image is built automatically after executing the instructions from a dockerfile. It' a frozen blueprint of your application. It contains everything your app needs to run - your code, runtime, libraries, system tools, and configuration defaults - but it doesn't actually do anything on its own. It's not alive.</p>
-    <div class="note tip">
-      <div class="note-label">Tip</div>
-      <p>Think of a Docker image like a restaurant recipe card. It lists ingredients, steps, and instructions. You can photocopy it a thousand times, but until you cook the dish, nothing happens. That cooking step is what creates a container.</p>
-    </div>
-    <p>What makes images powerful is that they are <strong>immutable</strong>. Once built, they never change. That immutability is the real reason Docker works so well in production. If the same image runs on my laptop, on a staging server, and on production, then "it worked on my machine" stops being an excuse.</p>
-   </div> 
-  <div class="step">
-  <div class="step-dot"></div>
-    <h4>Where do they live?</h4>
-      <p>Images live in registries. When you run <code>docker push</code> in the CLI you upload your image to a registry like <code>Docker Hub</code>or more likely something like <code>Azure Containe Registry</code>. When someone else or a pipeline runs <code>docker pull</code>, they/it download it. This is how you move images from your laptop to a server, or share them across a team. The image is identical everywhere - that's the whole point.</p>
-  </div>
-  <div class="step">
-  <div class="step-dot"></div>
-    <h4>What are image tags?</h4>
-      <p>A tag is a label you stick on an image to identify a specific version. This is done when you actually build the image. Tags are how we keep track of different versions. You might have <code>my-image:v1</code>, <code>my-image:v2</code>, and <code>my-image:dev</code> all sitting on your machine. Each points to a different immutable build. When you deploy, you specify which tag to use, for example <code>my-image:v1</code> in staging, <code>my-image:v2</code> in production so you always know exactly what's running where.</p>
       <div class="note warn">
-      <div class="note-label">Latest Tag Gotchas!</div>
-      <p>An image with a tag of <code>latest</code> doesn't actually mean "the most recent build." It's just the default tag name. If you build my-image:v3 and then run <code>docker pull my-image:latest</code>, you'll get whatever was last tagged as <code>latest</code>, which might be weeks old. For anything beyond local development or demonstrations, use explicit version tags so there's no ambiguity.</p>
+        <div class="note-label">Why not just use venv or conda?</div>
+        <p>Because virtual environments only isolate Python packages. They do not isolate system libraries (like CUDA drivers), operating system differences (Windows vs Linux), or system level dependencies.</p>
+      </div>
     </div>
-    <div class="note tip">
-      <div class="note-label">Tip</div>
-      <p>Git based tags tie images directly to your source code. Consider using the <code>commit hash</code> as the tag for an image. The commit hash is the most reliable because it's unique and immutable. You can always trace an image back to the exact code that built it.</p>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Core Docker Architecture</h4>
+      <p>To containerise any of our code we need to understand some of the basics of how the Docker architecture interacts with each other: the <code>Docker Engine</code> (aka the daemon), the <code>Docker CLI</code>, and a <code>registry</code>.</p>
+      <p>The <code>Docker CLI</code> (client) sends commands to the <code>Docker Engine</code> (daemon), which does the heavy lifting of building images, starting containers, managing networks and volumes. When you type <code>docker build</code> or <code>docker run</code>, the CLI makes an API call to the daemon, which executes it and returns the result. Images are stored locally on your machine after being built or pulled, and can be pushed to a registry like <code>Docker Hub</code> or <code>Azure Container Registry</code> for sharing.</p>
+
+      <div class="note tip">
+        <div class="note-label">What's a daemon?</div>
+        <p>Pronounced "dee-mon". The background process that manages Docker objects - it listens for API requests from the CLI, and handles building images, running containers, managing networks, and storing volumes. You never interact with it directly; the CLI talks to it for you.</p>
+      </div>
+
+      <p><code>Docker Desktop</code> bundles the Engine and CLI together and gives you a GUI on top, which is what most people install locally (what we've used here), but underneath it's still the same CLI-to-daemon relationship.</p>
+      <p>Most of the time though, you'll be focusing on these three core elements and concepts of Docker: <code>dockerfiles</code>, <code>images</code>, and <code>containers</code>.</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="docker-components.jpeg" style="max-width: 75%;">
+      </div>
+      <br>
+
+      <div class="note warn">
+        <div class="note-label">What about a Virtual Machine (VM)?</div>
+        <p>Virtual machines and containers both solve the problem of running software in an isolated environment, but they do it very differently. A VM virtualises an entire operating system. It'll have a full guest OS, which means each VM carries its own kernel, system libraries, and binaries. This makes VMs heavy, typically gigabytes in size and taking minutes to boot. Containers take a lighter approach: they share the host machine's kernel and only package the application and its specific dependencies. The result is an isolated process that's megabytes rather than gigabytes, starts in seconds, and can be moved between machines with almost no friction.</p>
+      </div>
     </div>
   </div>
 
-  <!-- Step with a note -->
-  <div class="step">
-    <div class="step-dot"></div>
-    <h4>Step with a callout</h4>
-    <p>Do something important here.</p>
-    <div class="note">
-      <div class="note-label">Note</div>
-      <p>Default blue note — use for general information and context.</p>
+  <!-- ============================================================
+       PHASE 2 — Dockerfiles
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">2</div>
+      <div class="phase-title">Dockerfiles</div>
     </div>
-    <div class="note warn">
-      <div class="note-label">Warning</div>
-      <p>Orange warning — use for gotchas, caveats, things that could go wrong.</p>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>What are they?</h4>
+      <p>This is a text file that contains all the instructions and commands needed to build an image. This file adheres to specific format and set of instruction to build the required docker image. But a Dockerfile is not just a setup script - it's a contract.</p>
+      <p>The Dockerfile explicitly answers the question: "What must exist for my application to run?"</p>
+      <p>When you write a Dockerfile, you are documenting your assumptions in executable form. Every instruction in a Dockerfile exists because something once broke without it. Missing system libraries. Wrong Python version. A dependency that worked locally but failed in CI. Dockerfiles are written in the blood of past outages and failed builds.</p>
     </div>
-    <div class="note tip">
-      <div class="note-label">Tip</div>
-      <p>Green tip — use for best practices, shortcuts, pro tips.</p>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Anatomy of a Dockerfile</h4>
+      <p>When we write a Dockerfile, we've got to think about how Docker builds images in layers, and how each instruction in our Dockerfile creates a new one. When you rebuild an image, Docker checks each layer from top to bottom: if nothing has changed in that layer or any layer before it, it reuses the cached version and skips the work. The moment something changes, that layer and everything below it gets rebuilt from scratch. This is why ordering your Dockerfile carefully can mean the difference between a five second rebuild and a five minute one.</p>
+      <p>We'll be exploring our own Dockerfile in a moment, but in the meantime here are some of the key commands you'll almost always come across in <em>any</em> Dockerfile.</p>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>FROM</code></h4>
+        <p>Every Dockerfile starts with this command which sets the base image you're building on top of. You'll typically be pulling a base image from somewhere like <a href="https://hub.docker.com/search?badges=official">Docker Hub</a> and its list of official images. Without a base image, you'd have to set up the operating system, install Python, configure paths, and handle all the low-level plumbing yourself.</p>
+
+        <div class="note">
+          <div class="note-label">Note</div>
+          <p>Base images range from bare-bones to full-featured. <code>alpine</code> is tiny (around 5MB) but can cause compatibility issues with Python packages that expect standard Linux libraries. <code>slim</code> variants like <code>python:3.xx-slim</code> strike a good balance — small enough to keep your image lean, complete enough that most packages install without fuss. The full python images include compilers and build tools, which is useful if your dependencies need to compile C extensions during install, but adds significant size.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>WORKDIR</code></h4>
+        <p>Sets the working directory inside the container. Every command that follows runs relative to this path. Think of it like running <code>cd /path/to/somewhere</code> on the command line.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>COPY</code></h4>
+        <p>Brings files from your local machine into the image, and this is where ordering the image layers becomes critical. Typically, we deliberately want to copy our package dependencies, e.g. <code>requirements.txt</code>, and install them on their own before copying the rest of our application code.</p>
+        <p>The reason: once we've copied in the requirements and installed them Docker will cache that entire installation layer. As long as our <code>requirements.txt</code> hasn't changed, Docker skips the install entirely on subsequent builds.</p>
+
+        <div class="note warn">
+          <div class="note-label">Think about your layering!</div>
+          <p>If we copied all the code first and then installed dependencies, changing a single line of application code (no matter how small or trivial) would invalidate the entire cache and force a full reinstall of every package which can take a very long time to rebuild.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>RUN</code></h4>
+        <p>Executes commands during the build process. This is where you install dependencies, e.g. <code>RUN uv pip install -r requirements.txt</code>, install system packages (<code>RUN apt-get install</code>), or run any setup scripts. Each <code>RUN</code> instruction creates a layer, so it's common to chain related commands together with <code>&&</code> to keep the layer count down.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>EXPOSE</code></h4>
+        <p>Documents which port your application listens on. It doesn't actually publish the port but it signals to anyone reading the Dockerfile (or to orchestration tools) what port to expect.</p>
+
+        <div class="note tip">
+          <div class="note-label">Container Ports</div>
+          <p>Think of a container as a room with no doors. The app inside is listening on a given port that we expose (very commonly port 8000), but nothing can reach it. When we eventually run our container we need to cut a door between our machine and the container, connecting the two. We do this with the CLI command <code>docker run -p our_port_number:the_container_port_number</code>. It's common for these match, e.g. <code>8000:8000</code>, but they don't have to. Just remember that the port on the right side has to match what you say is exposed in the Dockerfile.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>CMD</code></h4>
+        <p>Defines the default command that runs when a container starts from the image. Very commonly, this will be some sort of command that actually begins your application.</p>
+      </div>
     </div>
   </div>
-</div>
 
+  <!-- ============================================================
+       PHASE 3 — Dockerfiles: things to aim for
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">3</div>
+      <div class="phase-title">Dockerfiles: things to aim for</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Try for as small an image as possible</h4>
+      <p>When writing your <code>Dockerfile</code> and building the resulting image, you should aim for it to be as small and lightweight as you can get it. Here's a few reasons why:</p>
+      <h4>Faster deployments</h4>
+      <p>When you deploy a new container with an image Docker has to first pull the image before it can start the container. A 500MB image pulls in seconds. A 5GB image takes minutes. If we want to build scalable solutions, we need to think about how fast we can scale our applications out to meet user demand. The smaller the image, the quicker new containers can spin up.</p>
+      <h4>Lower costs</h4>
+      <p>Container images sit in a registry. You're paying for that storage. You're also paying for bandwidth every time an image gets pulled. If you have a CI pipeline that builds and pushes on every commit, and you're running across multiple environments (dev, staging, production), those costs add up. A smaller image is cheaper to store and transfer.</p>
+      <h4>Smaller attack surface</h4>
+      <p>Every piece of software in your image is a potential vulnerability. If your image includes a C compiler, and a CVE comes out for that compiler, your image is now flagged in security scans even though you never use the compiler at runtime. You have to rebuild and redeploy to clear the finding, or justify to your security team why it's there. If it's not in the image in the first place, the problem doesn't exist. Fewer packages means fewer things that can go wrong and fewer things you have to keep patched.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Multi-stage builds</h4>
+      <p>If we're aiming for as small an image as possible, then multi-stage builds are one of the best ways to get there.</p>
+      <p>Think of it like packing for a holiday.</p>
+      <p>To decide what to bring, you need to spread everything out. You open the wardrobe, pull out all your options, lay them across the bed. You try things on, compare outfits, check the weather forecast. You might need scissors to cut a tag off something, an iron for a creased shirt. The bedroom is a mess, and that's fine.</p>
+      <p>But when it's time to actually pack the suitcase, you pick out the five or six things you're actually going to wear, fold them up, and put them in the bag. The scissors go back in the drawer. The iron goes back in the cupboard. The rejected outfits go back in the wardrobe. Your suitcase is small, light, and contains exactly what you need for the trip. Nobody looks at a packed suitcase and thinks "this should also contain the iron, just in case".</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="giphy.gif">
+      </div>
+      <br>
+      <p>A single-stage Docker build is like zipping up the entire bedroom and checking it as luggage. Everything you touched during the process comes with you: the tools, the rejected options, the mess. It's heavy, it's expensive to transport, and most of what's in there you'll never use. But because of how Docker layers work, you can't really take things back out once they're in. Even if you remove them in a later step, they're still in the bag, just hidden under other stuff. You're still paying for the weight.</p>
+      <p>Multi-stage builds are the normal, sensible thing. Stage one is the bedroom where you spread everything out, use whatever tools you need, do the work. Stage two is the suitcase where you start empty, put in only what you need, and walk out the door. The mess in the bedroom doesn't follow you because the suitcase was never in the bedroom. It's a completely separate container that you packed deliberately.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Running as non-root</h4>
+      <p>By default, when you run a container, everything inside it runs as root. Most people don't realise this because they never explicitly set it. Root is just the default, and it works, so nobody questions it.</p>
+      <p>The problem is that root inside a container is the same root as outside the container. Docker tries to isolate as much as possible but that isolation isn't perfect. Container escape vulnerabilities exist and they come up regularly in CVE lists. If someone exploits a bug in your application and they land inside the container as root, they have a much better starting position to break out of the container and into the host machine.</p>
+      <p>Creating a non-root user to run your application from is trivial. You create a user, make sure they own the files they need to access, and switch to them. That's it.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Scan for CVEs</h4>
+      <p>This ties directly into the non-root and smaller image points. Container scanning tools, for example Docker Scout analyse your image and flag known vulnerabilities in every package installed. OS-level packages, Python libraries, system utilities, all of it.</p>
+      <p>The thing people don't expect the first time they run a scan is how many vulnerabilities come back. Even a basic <code>python:3.xx-slim</code> image will have dozens of findings, most of them in OS packages you've never heard of and your application never touches. A full <code>python:3.xx</code> image will have hundreds. And if you're deploying a single stage build with all your build tools still in there, you'll get a report that's genuinely overwhelming (trust me!) and full of critical and high severity findings in packages that exist in the image for no reason.</p>
+      <p>This is where everything connects. Multi-stage builds will reduce the number of packages in your final image, which directly reduces the number of things a scanner can flag. Using as small an image as possible means fewer OS packages to begin with.</p>
+
+      <div class="note tip">
+        <div class="note-label">Tip</div>
+        <p>None of this is about passing a scan with zero findings. That's nearly impossible and not really the goal. It's about keeping the noise manageable and liaising with relevant security teams to triage flagged vulnerabilities.</p>
+        <br>
+        <p>You could investigate using <a href="https://www.docker.com/products/hardened-images/">hardened base images</a> which are deliberately stripped down to contain only what's absolutely necessary although the trade off is usability, meaning your Dockerfile has to be more precise because you can't rely on common utilities being there.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PHASE 4 — Docker Images
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">4</div>
+      <div class="phase-title">Docker Images</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>What are they?</h4>
+      <p>A Docker image is built automatically after executing the instructions from a dockerfile. It's a frozen blueprint of your application. It contains everything your app needs to run - your code, runtime, libraries, system tools, and configuration defaults - but it doesn't actually do anything on its own. It's not alive.</p>
+
+      <div class="note tip">
+        <div class="note-label">Tip</div>
+        <p>Think of a Docker image like a restaurant recipe card. It lists ingredients, steps, and instructions. You can photocopy it a thousand times, but until you cook the dish, nothing happens. That cooking step is what creates a container.</p>
+      </div>
+
+      <p>What makes images powerful is that they are <strong>immutable</strong>. Once built, they never change. That immutability is the real reason Docker works so well in production. If the same image runs on my laptop, on a staging server, and on production, then "it worked on my machine" stops being an excuse.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Where do they live?</h4>
+      <p>Images live in registries. When you run <code>docker push</code> in the CLI you upload your image to a registry like <code>Docker Hub</code> or more likely something like <code>Azure Container Registry</code>. When someone else or a pipeline runs <code>docker pull</code>, they/it download it. This is how you move images from your laptop to a server, or share them across a team. The image is identical everywhere - that's the whole point!</p>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>What are image tags?</h4>
+      <p>A tag is a label you stick on an image to identify a specific version. This is done when you actually build the image. Tags are how we keep track of different versions. You might have <code>my-image:v1</code>, <code>my-image:v2</code>, and <code>my-image:dev</code> all sitting on your machine. Each points to a different immutable build. When you deploy, you specify which tag to use, for example <code>my-image:v1</code> in staging, <code>my-image:v2</code> in production so you always know exactly what's running where.</p>
+
+      <div class="note warn">
+        <div class="note-label">Latest Tag Gotchas!</div>
+        <p>An image with a tag of <code>latest</code> doesn't actually mean "the most recent build." It's just the default tag name. If you build my-image:v3 and then run <code>docker pull my-image:latest</code>, you'll get whatever was last tagged as <code>latest</code>, which might be weeks old. For anything beyond local development or demonstrations, use explicit version tags so there's no ambiguity.</p>
+      </div>
+
+      <div class="note tip">
+        <div class="note-label">Tip</div>
+        <p>Git based tags tie images directly to your source code. Consider using the <code>commit hash</code> as the tag for an image. The commit hash is the most reliable because it's unique and immutable. You can always trace an image back to the exact code that built it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PHASE 5 — Docker Containers
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">5</div>
+      <div class="phase-title">Docker Containers</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>What are they?</h4>
+      <p>If an image is a blueprint, a container is a running instance of that blueprint. When you run a container, Docker takes the image, adds a thin writable layer on top, isolates it from the rest of your system, and starts executing the defined command. That's it.</p>
+      <p>You can run many containers from the same image, and they don't interfere with each other. This is how modern scaling works. Instead of making one giant server stronger, you run ten identical containers behind a load balancer. If one dies, you replace it. No emotional attachment.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PHASE 6 — What's our API
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">6</div>
+      <div class="phase-title">How our API works</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>API quick walkthrough</h4>
+      <p>This is a very quick summary of how we're using FastAPI with a single endpoint: <code>POST /predict</code> for our demo. You send it text, you get back a label (positive/negative) and a confidence score. That's it.</p>
+      <p>The DistilBERT model wrapper lives in its own module. It loads a tokenizer and an ONNX Runtime session at startup. If anything goes wrong during loading, the app crashes immediately rather than running in a broken state.</p>
+      <p>The inference code tokenizes the input, runs it through the ONNX session, and returns the top label.</p>
+
+      <div class="note">
+        <div class="note-label">Note</div>
+        <p>ONNX stands for Open Neural Network Exchange. It's an open format for representing machine learning models. Essentially a common file format that different ML frameworks can all read and write. The problem it solves is that models are typically trained in a specific framework like PyTorch or TensorFlow, and those frameworks are large and complex. PyTorch alone is over 2GB. ONNX lets you export a trained model into a framework-agnostic format.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Why are we using DistilBERT?</h4>
+      <p>In a nutshell, because it's a real model (one of the most popular on HuggingFace) that sits in the sweet spot for teaching deployment. It's also not a toy scikit-learn classifier so the Docker and infrastructure patterns should be transferable to real work. It's also small enough to run on CPU, so we don't need to worry about GPUs, model sharding, or any of the complexity that comes with serving full LLMs.</p>
+    </div>
+  </div>
 
 <!-- ============================================================
-     SECOND PHASE — copy and increment the number
-     ============================================================ -->
-<div class="phase">
-  <div class="phase-header">
-    <div class="phase-number">2</div>
-    <div class="phase-title">Another Phase</div>
-  </div>
-
-  <div class="step">
-    <div class="step-dot"></div>
-    <h4>YAML configuration example</h4>
-    <p>Use the <code>yaml-block</code> class for config files.</p>
-    <div class="yaml-block">
-      <span class="lang-tag">yaml</span>
-      <pre><span class="yaml-key">key</span>: <span class="yaml-val">value</span>
-<span class="yaml-key">nested</span>:
-  <span class="yaml-key">property</span>: <span class="yaml-val">something</span>
-  <span class="yaml-key">list</span>:
-    - <span class="yaml-val">item one</span>          <span class="yaml-comment"># inline comment</span>
-    - <span class="yaml-val">item two</span></pre>
+       PHASE 7 — Designing the Dockerfile
+       ============================================================ -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">7</div>
+      <div class="phase-title">Writing our APIs Dockerfile</div>
     </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Attempt 1: Simple version</h4>
+      <p>I wrote the simplest possible Dockerfile first. Install PyTorch, load the model, serve it. It worked. But the image was 9GB.</p>
+      <p>Why was it big? Well, the default PyTorch install from PyPI pulls in CUDA libraries - GPU drivers, cuDNN, the full NVIDIA runtime stack - even if you're deploying to a CPU only container. I was putting in hundreds of megabytes of GPU tooling that will literally never execute. Having an image this would mean slow builds (nearly 10 minutes), slow pulls, expensive storage and sluggish scale outs.</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="original_build.png" style="max-width: 100%;">
+      </div>
+      <div class="note">
+        <div class="note-label">Note</div>
+        <p>The DistilBERT model we are using is a PyTorch model (it was trained in PyTorch, its weights are stored in PyTorch's format, and loading it with Hugging Face's transformers library spins up a PyTorch model object) I knew I definitely needed PyTorch at runtime as this was the thing actually running the prediction.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Attempt 2: PyTorch CPU only</h4>
+      <p>The first optimisation was to install torch with the CPU-only index URL so I did'nt pull in CUDA. It was all the same code, the only change was how PyTorch got installed. It was much faster to build (2 minutes) and the image dropoed to 2.5GB!</p>
+      <p>That's a significant win for essentially zero code changes. But 2.5GB is still heavy, and the reason is that PyTorch itself is a large framework even without CUDA. I was still packing in an entire deep learning training framework just to run inference on a single small model. It's like bringing the whole kitchen to serve one dish.</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="cpu_torch_build.png" style="max-width: 100%;">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Attempt 3: ONNX runtime</h4>
+      <p>This is where the real shift happened, and it's worth being honest that this one required actual work. I couldn't just swap a dependency, I had to change the model loading code, the inference code, and split my <code>requirements.txt</code> into build-time and runtime files.</p>
+      <p>The model gets exported to ONNX format during the Docker build (in Stage 1, with PyTorch present), and the runtime image (Stage 2) only needs <code>onnxruntime</code>, which is a fraction of PyTorch's size. The final image droped to 1.5GB, and took only 90 seconds to build!</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="onnx_build.png" style="max-width: 100%;">
+      </div>
+      <div class="note tip">
+        <div class="note-label">Note</div>
+        <p>The point here is that this is a normal engineering process. You don't arrive at the optimised version on day one. You start with "make it work," then you look at what you've built and ask what's unnecessarily heavy. Each iteration involved a tradeoff.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Anatomy of a Dockerfile</h4>
+      <p>The final Dockerfile show's the payoff of the multi-stage build discussed earlier. Stage 1 is the bedroom: it pulls in PyTorch, the Hugging Face export tooling, and everything else needed to convert the model to ONNX. None of that ships in the final built image from Stage 2.</p>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>FROM python:3.11-slim AS builder</code></h4>
+        <p>A slim version of Python was chosen rather than alpine or the full image as the base, and the <code>AS</code> builder alias is what makes multi-stage work; it gives this stage a name so Stage 2 can selectively copy from it.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv</code></h4>
+        <p>We pull the <code>uv</code> binary directly from a published container image rather than installing it with pip or curl and then having to cleanup. </p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>COPY requirements-build.txt</code></h4>
+        <h4><code>RUN uv pip install</code></h4>
+        <p>We copy the build requirements file first and install before copying any application code. If our application code changes but our dependencies don't, Docker skips the entire install on rebuild. This build time requirements has everything we need to convert and export the HuggingFace model into an ONNX model.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>RUN python -c</code></h4>
+        <p>We download the pretrained DistilBERT model from Hugging Face and convert it to ONNX format during the build, not at runtime. That means the final image ships a pre-exported ONNX model and never needs PyTorch, the optimum library, or network access to Hugging Face. It also means the model is baked into the image.</p>
+        <div class="note warn">
+          <div class="note-label">Baking models in the image</div>
+          <p>The main downside is that the model and the application code are coupled together in the same image. If I wanted to update the model (say fine tune it or swap to a newer version) I'd need have to rebuild and redeploy the entire image even if the application code hasn't changed at all.</p>
+          <br>
+          <p>The alternative would be to decouple them: store the model externally (cloud storage, a model registry, a mounted volume) and have the application pull it at startup. That would let us update the model independently of the code, and our image stays smaller. The tradeoff is we'd now have a startup dependency on an external service, our cold start time increases, and we'd need to handle what happens if that service is unreachable.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>COPY requirements-runtime.txt</code></h4>
+        <h4><code>RUN uv pip install --prefix=/runtime</code></h4>
+        <p>We copy the runtime requirements file which has all the packages we need at runtime, and we install them at the --prefix=/runtime so they are in an isolated directory rather than the system Python. This is so Stage 2 can copy just that directory and get a clean set of runtime only packages without any build contamination.</p>
+      </div>
+      
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>RUN useradd --create-home appuser</code></h4>
+        <p>We create non-root user. A simple way to improve container security.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>COPY --from=builder</code></h4>
+        <p>This is where the multi-stage payoff becomes concrete. We selectively copy three things from the builder: the runtime Python packages (no PyTorch), the uvicorn binary, and the exported ONNX model. Everything else stays behind in Stage 1 and never enters the final image.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>RUN chown</code></h4>
+        <h4><code>USER appuser</code></h4>
+        <p>The chown ensures the non-root user actually has permission to read the model files that were copied in as root. Then <code>USER</code> switches all subsequent commands (including <code>CMD</code>) to run as <code>appuser</code>. Without the chown, the app would crash at startup with a permission denied error on the model directory.</p>
+      </div>
   </div>
 
-  <div class="step">
-    <div class="step-dot"></div>
-    <h4>Multi-line command example</h4>
+
+  <hr>
+
+  <!-- ============================================================
+       BADGE EXAMPLES
+       ============================================================ -->
+  <h2>Badge Examples</h2>
+  <p>
+    <span class="badge blue">Docker</span>
+    <span class="badge green">Passing</span>
+    <span class="badge orange">In Progress</span>
+    <span class="badge red">Breaking</span>
+    <span class="badge purple">Optional</span>
+  </p>
+
+  <!-- ============================================================
+       DANGER BOX
+       ============================================================ -->
+  <div class="danger">
+    <h4>Danger Zone</h4>
+    <p>Use this for destructive actions like deleting resources or irreversible operations.</p>
     <div class="cmd-block">
-      <span class="lang-tag">bash</span>
-      <pre><span class="prompt">$ </span><span class="cmd-name">long-command</span> \
-    <span class="flag">--first-flag</span> <span class="value">value1</span> \
-    <span class="flag">--second-flag</span> <span class="value">value2</span> \
-    <span class="flag">--third-flag</span> <span class="value">value3</span></pre>
+      <pre><span class="prompt">$ </span><span class="cmd-name">dangerous-command</span> <span class="flag">--force</span></pre>
     </div>
   </div>
-</div>
 
-
-<hr>
-
-
-<!-- ============================================================
-     BADGES — inline labels you can use anywhere
-     ============================================================ -->
-<h2>Badge Examples</h2>
-<p>
-  <span class="badge blue">Docker</span>
-  <span class="badge green">Passing</span>
-  <span class="badge orange">In Progress</span>
-  <span class="badge red">Breaking</span>
-  <span class="badge purple">Optional</span>
-</p>
-
-
-<!-- ============================================================
-     DANGER BOX — for destructive actions, cleanup, etc.
-     ============================================================ -->
-<div class="danger">
-  <h4>Danger Zone</h4>
-  <p>Use this for destructive actions like deleting resources or irreversible operations.</p>
-  <div class="cmd-block">
-    <pre><span class="prompt">$ </span><span class="cmd-name">dangerous-command</span> <span class="flag">--force</span></pre>
-  </div>
-</div>
-
-
-<!-- ============================================================
-     FOOTER
-     ============================================================ -->
-<footer>
-  Your project name · Your team · Date or version
-</footer>
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer>
+    Your project name · Your team · Date or version
+  </footer>
 
 </body>
 </html>
