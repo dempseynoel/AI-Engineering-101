@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document Title</title>
+  <title>Docker for AI Engineers</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
@@ -369,6 +369,8 @@
     .note.warn .note-label { color: var(--orange); }
     .note.tip  .note-label { color: var(--green); }
 
+    .note.alert .note-label { color: var(--red); }
+
     .note p {
       font-size: 0.9rem;
       color: var(--text-dim);
@@ -494,9 +496,7 @@
     <p>Familiarity with Python and basic command line usage is assumed. No prior Docker or Azure experience is needed - that's what we're here to learn!</p>
   </div>
 
-  <!-- ============================================================
-       LAB OVERVIEW
-       ============================================================ -->
+  <!-- LAB OVERVIEW -->
   <h2>Lab Overview</h2>
   <p>This lab introduces <code>Docker</code> as the foundational tool for packaging and deploying AI/ML applications and models. As we data scientists transition into AI and ML engineering roles for our clients, the ability to ship models as reliable and reproducible services becomes essential.</p>
   <p>By the end of the lab we'll have used <code>Docker</code> to package a <code>FastAPI</code> sentiment analysis API (serving a real model via <code>ONNX</code>) into a container, deployed it to <code>Azure</code>, and have it as a live endpoint.</p>
@@ -517,9 +517,7 @@
   </div>
   <br>
 
-  <!-- ============================================================
-       PHASE 1 — What is Docker, and why should I care?
-       ============================================================ -->
+  <!-- PHASE 1 — What is Docker, and why should I care? -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">1</div>
@@ -577,9 +575,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       PHASE 2 — Dockerfiles
-       ============================================================ -->
+  <!-- PHASE 2 — Dockerfiles -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">2</div>
@@ -654,9 +650,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       PHASE 3 — Dockerfiles: things to aim for
-       ============================================================ -->
+  <!-- PHASE 3 — Dockerfiles: things to aim for -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">3</div>
@@ -715,9 +709,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       PHASE 4 — Docker Images
-       ============================================================ -->
+  <!-- PHASE 4 — Docker Images -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">4</div>
@@ -760,9 +752,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       PHASE 5 — Docker Containers
-       ============================================================ -->
+  <!-- PHASE 5 — Docker Containers -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">5</div>
@@ -777,9 +767,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       PHASE 6 — What's our API
-       ============================================================ -->
+  <!-- PHASE 6 — What's our API -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">6</div>
@@ -806,9 +794,7 @@
     </div>
   </div>
 
-<!-- ============================================================
-       PHASE 7 — Designing the Dockerfile
-       ============================================================ -->
+  <!-- PHASE 7 — Designing the Dockerfile -->
   <div class="phase">
     <div class="phase-header">
       <div class="phase-number">7</div>
@@ -818,7 +804,7 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>Attempt 1: Simple version</h4>
-      <p>I wrote the simplest possible Dockerfile first. Install PyTorch, load the model, serve it. It worked. But the image was 9GB.</p>
+      <p>I wrote the simplest possible Dockerfile first. Install PyTorch, load the model, serve it. It worked. But the image was 9.4GB.</p>
       <p>Why was it big? Well, the default PyTorch install from PyPI pulls in CUDA libraries - GPU drivers, cuDNN, the full NVIDIA runtime stack - even if you're deploying to a CPU only container. I was putting in hundreds of megabytes of GPU tooling that will literally never execute. Having an image this would mean slow builds (nearly 10 minutes), slow pulls, expensive storage and sluggish scale outs.</p>
       <br>
       <div style="text-align: center;">
@@ -845,14 +831,20 @@
       <div class="step-dot"></div>
       <h4>Attempt 3: ONNX runtime</h4>
       <p>This is where the real shift happened, and it's worth being honest that this one required actual work. I couldn't just swap a dependency, I had to change the model loading code, the inference code, and split my <code>requirements.txt</code> into build-time and runtime files.</p>
-      <p>The model gets exported to ONNX format during the Docker build (in Stage 1, with PyTorch present), and the runtime image (Stage 2) only needs <code>onnxruntime</code>, which is a fraction of PyTorch's size. The final image droped to 1.5GB, and took only 90 seconds to build!</p>
+      <p>The model gets exported to ONNX format during the Docker build (in Stage 1, with PyTorch present), and the runtime image (Stage 2) only needs <code>onnxruntime</code>, which is a fraction of PyTorch's size. The final image droped to 1.5GB (a massive 85% reduction in size), and took only 90 seconds to build!</p>
       <br>
       <div style="text-align: center;">
         <img src="onnx_build.png" style="max-width: 100%;">
       </div>
-      <div class="note tip">
-        <div class="note-label">Note</div>
-        <p>The point here is that this is a normal engineering process. You don't arrive at the optimised version on day one. You start with "make it work," then you look at what you've built and ask what's unnecessarily heavy. Each iteration involved a tradeoff.</p>
+      <div style="text-align: center;">
+        <img src="image_sizes.png" style="max-width: 100%;">
+      </div>
+      <br>
+      <p>The point here is that this is a normal engineering process. You don't arrive at the optimised version on day one. You start with "make it work," then you look at what you've built and ask what's unnecessarily heavy. Each iteration involved a tradeoff.</p>
+      <p>Despite the reduction in size though, there's still vulnerabilities in the image. In reality, this is where you'd go an investigate what they are, speak to the security folks to understand risk appetites etc prior to getting any relevant approval sign offs to use the image.</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="cves.png" style="max-width: 50%;">
       </div>
     </div>
 
@@ -870,7 +862,7 @@
       <div class="step">
         <div class="step-dot"></div>
         <h4><code>COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv</code></h4>
-        <p>We pull the <code>uv</code> binary directly from a published container image rather than installing it with pip or curl and then having to cleanup. </p>
+        <p>We pull the <code>uv</code> binary directly from a published container image rather than installing it with pip or curl and then having to cleanup.</p>
       </div>
 
       <div class="step">
@@ -898,7 +890,7 @@
         <h4><code>RUN uv pip install --prefix=/runtime</code></h4>
         <p>We copy the runtime requirements file which has all the packages we need at runtime, and we install them at the --prefix=/runtime so they are in an isolated directory rather than the system Python. This is so Stage 2 can copy just that directory and get a clean set of runtime only packages without any build contamination.</p>
       </div>
-      
+
       <div class="step">
         <div class="step-dot"></div>
         <h4><code>RUN useradd --create-home appuser</code></h4>
@@ -917,39 +909,130 @@
         <h4><code>USER appuser</code></h4>
         <p>The chown ensures the non-root user actually has permission to read the model files that were copied in as root. Then <code>USER</code> switches all subsequent commands (including <code>CMD</code>) to run as <code>appuser</code>. Without the chown, the app would crash at startup with a permission denied error on the model directory.</p>
       </div>
-  </div>
-
-
-  <hr>
-
-  <!-- ============================================================
-       BADGE EXAMPLES
-       ============================================================ -->
-  <h2>Badge Examples</h2>
-  <p>
-    <span class="badge blue">Docker</span>
-    <span class="badge green">Passing</span>
-    <span class="badge orange">In Progress</span>
-    <span class="badge red">Breaking</span>
-    <span class="badge purple">Optional</span>
-  </p>
-
-  <!-- ============================================================
-       DANGER BOX
-       ============================================================ -->
-  <div class="danger">
-    <h4>Danger Zone</h4>
-    <p>Use this for destructive actions like deleting resources or irreversible operations.</p>
-    <div class="cmd-block">
-      <pre><span class="prompt">$ </span><span class="cmd-name">dangerous-command</span> <span class="flag">--force</span></pre>
     </div>
   </div>
 
-  <!-- ============================================================
-       FOOTER
-       ============================================================ -->
+  <!-- PHASE 8 — Building and running locally -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">8</div>
+      <div class="phase-title">How to build and run the image locally</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Build</h4>
+      <p>To get our model API built and running locally, we first need to make sure Docker Desktop is running and open a terminal in the directory containing our Dockerfile and application code. Everything from here happens through the Docker CLI. We'll type commands, the CLI passes them to the Docker Engine running in the background, and the engine does the work.</p>
+      <p>To build the image, run <code>docker build -t bert-sentiment-api:version1 .</code> This tells Docker to read the Dockerfile in the current directory, execute every instruction from top to bottom, and tag the resulting image as <code>bert-sentiment-api:version1</code>. The first build will take a few minutes because it's downloading the base image, installing dependencies, and exporting the model. Subsequent builds will be much faster thanks to layer caching, assuming you haven't changed your requirements files</p>
+      <div class="note warn">
+        <div class="note-label">The -t flag</div>
+        <p>Pay attention to the <code>-t</code> flag in the command we ran. It's this flag that tags the image with a name and version. <code>bert-sentiment-api</code> is the name, <code>version1</code> is the tag. These are seperate by a <code>: (colon)</code>. Without <code>-t</code>, Docker will still build the image but it'll only have a random hash as an identifier, which isn't particularly useful when we need to reference it later.</p>
+        <br>
+        <p>Also, notice the <code>.</code> at the end of the command. This tells Docker which directory to use as the source for any <code>COPY</code>instructions in the Dockerfile. The <code>.</code> means "the current directory." Docker sends the entire contents of this directory to the engine, which is why a <code>.dockerignore</code> file matters.</p>
+        <p>We've not discussed this yet, but it's out in project directory and without one, we'd be sending everything, including things like .git folders, __pycache__, local virtual environments, and anything else sitting in the directory that the image doesn't need.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Run</h4>
+      <p>Once the build finishes, run <code>docker run -p 8000:8000 bert-sentiment-api</code> to start a container from the image. The <code>-p 8000:8000</code> flag maps port 8000 on your machine to port 8000 inside the container. Without this, the API would be running but unreachable. Once you see the Uvicorn startup message in your terminal, open http://localhost:8000/docs in a browser to get FastAPI's interactive Swagger UI, where you can test the <code>/precit</code> endpoint directly.</p>
+    </div>
+  </div>
+
+  <!-- PHASE 9 — How to deploy to Azure -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">9</div>
+      <div class="phase-title">How to deploy to Azure</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Azure Container Registry</h4>
+      <p>Before we can deploy to Azure, the image needs to live somewhere Azure can pull it from. Azure Container Registry is a private registry hosted on Azure cloud that integrates with all Azure services - so this is a obvious choice if we are deploying to Azure, although there's nothing preventing us having the image stored elsewhere!</p>
+      <p>The following commands can be used to create the Azure Container Registry:</p>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>az login</code></h4>
+        <p>First login to your Azure subscription, or Capgemini's if you plan on using the environment we've setup for the training series.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>az acr create --name "yourregistryname" --resource-group "yourresourcegroup" --sku Basic</code></h4>
+        <p>This creates a registry for us, where the yourregistryname and yourresourcegroup are the unique names you'll give for the registry and resource group.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>az acr login --name yourregistryname</code></h4>
+        <p>Once the registry exists, log Docker into it. From here we'll able to tag the image we built locally (and which is under 'images' on the Docker Desktop Dashboard) to point to our container registry.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>docker tag bert-sentiment-api:version1 youregistryname.azurecr.io/bert-sentiment-api:version1</code></h4>
+        <p>This tells the local image we built to point towards our Azure Container Registry.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>docker push yourregistryname.azurecr.io/bert-sentiment-api:version1</code></h4>
+        <p>Finally, we push the local image up to the Azure Container Registry.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Azure Container Apps</h4>
+      <p>With the image in ACR, we can deploy it to Azure Container Apps, which is a managed service that runs our container without us having to provision or manage any underlying infrastructure. It's essentially a wrapper around Kubernetes which means we don't have to deal with the complexities of that, but which still allows for auto-scaling to meet demand, scaling to zero, and host of other capabilities.</p>
+      <p>The following commands can be used to create the Azure Container Apps service:</p>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>az containerapp env create --name yourenvname --resource-group yourresourcegroup --location uksouth</code></h4>
+        <p>This creates our Container Apps environment which will can host multiple container apps.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-dot"></div>
+        <h4><code>az containerapp create --name bert-sentiment-api --resource-group yourresourcegroup --environment yourenvname --image yourregistryname.azurecr.io/bert-sentiment-api:version1 --target-port 8000 --ingress external --registry-server yourregistryname.azurecr.io</code></h4>
+        <p>With the Container App environemnt provisioned, we can deploy an actual container app to sit within the environment. The <code>--target-port 8000</code> tells Azure which port your app listens on (matching the EXPOSE in your Dockerfile), and <code>--ingress external</code> makes it publicly accessible.</p>
+        <div class="note warn">
+          <div class="note-label">Publicly accessible ports</div>
+          <p>This is almost certainly <strong>not</strong> what you would want to do with a client. Leaving URLs and ports open to the outside world is never a good idea. I'm only doing it here as setting up firewalls and netwroking permissions is complex and out of scope for this demonstration.</p>
+        </div>
+        <p>Once the deployment finishes, Azure gives you a URL. Open it with <code>/docs</code> on the end and you've got the same Swagger UI you had locally, now running as a live endpoint. The image running in Azure is identical to what you tested on your machine - same code, same model, same dependencies. That's the whole point</p>
+        <div class="danger">
+          <h4>Delete your resources</h4>
+          <p>Use the following command to delete your Azure reources, otherwise you may incur significant costs.</p>
+          <div class="cmd-block">
+            <pre><span class="prompt">$ </span><span class="cmd-name">az group delete --name yourresourcegroup --yes --no-wait</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 10 — What's next -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-number">10</div>
+      <div class="phase-title">What's next</div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Terraform and IAC</h4>
+      <p>In this lab we deployed our containerised API by running Azure CLI commands manually in the terminal. That works for learning and one off deployments, but it doesn't scale to real projects. If you needed to recreate the same infrastructure in a second environment, or hand it off to a different team, they'd have to re-run the same sequence of commands and hope they got every flag right. There's no record of what exists, no way to review changes before they happen, no way to detect infrastructure drift, and no easy way to tear it down and rebuild it consistently.</p>
+      <p>In Lab 2 we'll solve that with Terraform, an infrastructure as code tool that lets you define your cloud resources: the container registry, the container apps environment, the container app itself all as declarative configuration files. Instead of running imperative commands one at a time, you describe what you want to exist and Terraform figures out how to make it happen. The same sentiment analysis API, the same Docker image, but deployed through code that can be version controlled, reviewed in a pull request, and reused across environments.</p>
+    </div>
+  </div>
+
   <footer>
-    Your project name · Your team · Date or version
+    Author: Noel Dempsey | 12 April 2026 | Version 1
   </footer>
 
 </body>
