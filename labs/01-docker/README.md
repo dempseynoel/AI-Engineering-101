@@ -1,131 +1,132 @@
-# AI Engineering Demo
+# Docker for AI Engineers
 
-A companion repository for the **AI Engineering Seminar Series** — teaching data scientists the infrastructure skills they need to deploy ML models to production.
+Docker from scratch: build, containerise, and deploy a real sentiment analysis model end to end.
 
-## Seminar Series
+**Capgemini AI Engineering Training — Lab 1**
 
-| Seminar | Topic | Key Files |
-|---------|-------|-----------|
-| **1 — Docker** | Containerising a DistilBERT model endpoint | `app/`, `Dockerfile`, `.dockerignore` |
-| **2 — Terraform** | Infrastructure as Code for Azure | `infra/` |
+## Overview
 
-The repo also includes a simple CI/CD pipeline (`.github/workflows/`) that ties everything together: running tests, building the Docker image, and deploying to Azure on merge to main.
+This lab walks through packaging a FastAPI sentiment analysis API (serving a DistilBERT model via ONNX Runtime) into a Docker container, then deploying it to Azure Container Apps as a live endpoint.
+
+You'll write a multi-stage Dockerfile from scratch, optimise image size from 9.4GB down to 1.5GB, and learn why each decision matters in production AI/ML work.
+
+## Prerequisites
+
+- **Docker Desktop** installed and running
+- **Python 3.11+** for local development
+- **VS Code** (or any editor with a terminal)
+- **Azure CLI** (`az`) installed and authenticated with an active Azure subscription
+- **Git** installed, to clone the repo containing the demo source files
+
+No prior Docker or Azure experience is needed.
+
+## What You'll Learn
+
+- What Docker is and why it matters for AI engineering
+- How a real model is integrated into a serving application
+- How to write a Dockerfile for an AI/ML application with model dependencies
+- How to build, run, and deploy a containerised FastAPI model endpoint to Azure
+
+Full documentation with added explanations is available [here](https://dempseynoel.github.io/AI-Engineering-101/labs/01-docker/docs/01-docker.html).
 
 ## Project Structure
 
 ```
-ai-engineering-demo/
-├── app/
-│   ├── main.py              # FastAPI application
-│   └── model.py             # DistilBERT sentiment model wrapper
-├── tests/
-│   └── test_api.py          # API test suite
-├── infra/
-│   ├── main.tf              # Azure infrastructure
-│   ├── variables.tf         # Terraform variables
-│   ├── outputs.tf           # Terraform outputs
-│   └── terraform.tfvars.example
-├── .github/workflows/
-│   ├── ci.yml               # CI: test + Docker build on every push
-│   └── deploy.yml           # CD: push to ACR + Terraform apply on main
-├── Dockerfile               # Multi-stage build with uv (pre-downloads model weights)
+.
+├── Dockerfile
 ├── .dockerignore
-├── requirements.txt
-└── .gitignore
+├── requirements-build.txt      # Build-stage dependencies (PyTorch, optimum, etc.)
+├── requirements-runtime.txt    # Runtime dependencies (onnxruntime, fastapi, etc.)
+├── app/
+│   ├── main.py                 # FastAPI app with POST /predict endpoint
+│   └── model.py                # DistilBERT model wrapper (ONNX inference)
+└── images/                     # Lab documentation images
 ```
-
-## The Model
-
-This demo uses **DistilBERT** (`distilbert-base-uncased-finetuned-sst-2-english`), a
-distilled version of BERT fine-tuned for sentiment analysis. It's a real transformer
-model with 66M parameters that runs on CPU in under a second — no GPU needed.
-
-It is **not** an LLM. It's an encoder-only classifier that takes text in and outputs
-a sentiment label (positive/negative) with a confidence score.
 
 ## Quick Start
 
-### Run locally (no Docker)
+### Build the image
 
 ```bash
-cd ai-engineering-demo
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-uvicorn app.main:app --reload
-# Open http://localhost:8000/docs
+docker build -t bert-sentiment-api:version1 .
 ```
 
-### Run with Docker
+The first build takes a few minutes (downloading the base image, installing dependencies, exporting the model to ONNX). Subsequent builds are much faster thanks to layer caching.
+
+### Run locally
 
 ```bash
-docker build -t ai-demo:local .
-docker run -p 8000:8000 ai-demo:local
-# Open http://localhost:8000/docs
+docker run --rm --name bert-api -p 8000:8000 bert-sentiment-api:version1
 ```
 
-### Run tests
+Once you see the Uvicorn startup message, open [http://localhost:8000/docs](http://localhost:8000/docs) to access the Swagger UI and test the `/predict` endpoint.
+
+### Stop the container
 
 ```bash
-uv pip install pytest httpx
-pytest tests/ -v
+docker stop bert-api
 ```
 
-### Deploy infrastructure
+## Deploy to Azure
+
+### 1. Push to Azure Container Registry
 
 ```bash
-cd infra
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your values
-terraform init
-terraform plan
-terraform apply
+az login
+az acr create --name <yourregistryname> --resource-group <yourresourcegroup> --sku Basic
+az acr login --name <yourregistryname>
+docker tag bert-sentiment-api:version1 <yourregistryname>.azurecr.io/bert-sentiment-api:version1
+docker push <yourregistryname>.azurecr.io/bert-sentiment-api:version1
 ```
 
-## CI/CD Pipeline
-
-The GitHub Actions pipeline automates the full lifecycle:
-
-- **CI** (`ci.yml`): On every push — installs dependencies with uv, runs pytest, then builds the Docker image and verifies the container starts and passes a health check.
-- **CD** (`deploy.yml`): On merge to main (after CI passes) — builds and pushes the image to ACR, runs Terraform to update the Container App, and runs a smoke test against the live endpoint.
-
-### Required GitHub Secrets
-
-| Secret | Description |
-|--------|-------------|
-| `AZURE_CREDENTIALS` | Azure service principal credentials (JSON) |
-
-The ACR name is configured as an environment variable in `deploy.yml`.
-
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check — returns model loaded status |
-| `POST` | `/predict` | Sentiment prediction — accepts `{"text": "..."}` |
-| `GET` | `/docs` | Interactive Swagger UI |
-
-### Example Request
+### 2. Deploy to Azure Container Apps
 
 ```bash
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "I absolutely love this product!"}'
+az containerapp env create \
+  --name <yourenvname> \
+  --resource-group <yourresourcegroup> \
+  --location uksouth
+
+az containerapp create \
+  --name bert-sentiment-api \
+  --resource-group <yourresourcegroup> \
+  --environment <yourenvname> \
+  --image <yourregistryname>.azurecr.io/bert-sentiment-api:version1 \
+  --target-port 8000 \
+  --ingress external \
+  --registry-server <yourregistryname>.azurecr.io
 ```
 
-```json
-{
-  "text": "I absolutely love this product!",
-  "label": "positive",
-  "score": 0.9998
-}
+Once deployed, append `/docs` to the URL Azure provides to access the Swagger UI.
+
+### 3. Clean up resources
+
+```bash
+az group delete --name <yourresourcegroup> --yes --no-wait
 ```
 
-## Prerequisites
+> **Warning:** Delete your resources when you're done to avoid incurring costs.
 
-- Python 3.11+
-- [uv](https://docs.astral.sh/uv/)
-- Docker Desktop
-- Terraform 1.5+
-- Azure CLI (logged in)
-- An Azure subscription
+## Dockerfile Design
+
+The Dockerfile uses a **multi-stage build** with `uv` for fast dependency installs:
+
+- **Stage 1 (builder):** Installs PyTorch and Hugging Face tooling, downloads the DistilBERT model, exports it to ONNX format, and installs runtime dependencies into an isolated prefix.
+- **Stage 2 (runtime):** Starts from a clean `python:3.11-slim` base, copies only the ONNX model, runtime packages, and application code. Runs as a non-root user.
+
+This approach reduced the final image from **9.4GB** (full PyTorch + CUDA) → **2.5GB** (CPU-only PyTorch) → **1.5GB** (ONNX Runtime, multi-stage).
+
+## Scanning for Vulnerabilities
+
+```bash
+docker scout quickview bert-sentiment-api:version1
+docker scout cves bert-sentiment-api:version1
+```
+
+## What's Next
+
+**Lab 2** covers deploying the same API using **Terraform** for infrastructure as code — version-controlled, reviewable, and reproducible across environments.
+
+## Author
+
+Noel Dempsey | April 2026
