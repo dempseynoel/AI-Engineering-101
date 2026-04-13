@@ -480,12 +480,10 @@
   <header>
     <div class="series-label">Capgemini AI Engineering Training | Lab 1</div>
     <h1>Docker for AI Engineers</h1>
-    <div class="subtitle">Docker from scratch: build, containerise, and deploy a real ML model end to end</div>
+    <div class="subtitle">Docker from scratch: build, containerise, and deploy a real sentiment analysis model end to end</div>
   </header>
 
-  <!-- ============================================================
-       PREREQUISITE BOX
-       ============================================================ -->
+  <!-- PREREQUISITE BOX -->
   <div class="prereq">
     <h3>Prerequisites</h3>
     <p><code>Docker Desktop</code> installed and running.</p>
@@ -499,7 +497,7 @@
   <!-- LAB OVERVIEW -->
   <h2>Lab Overview</h2>
   <p>This lab introduces <code>Docker</code> as the foundational tool for packaging and deploying AI/ML applications and models. As we data scientists transition into AI and ML engineering roles for our clients, the ability to ship models as reliable and reproducible services becomes essential.</p>
-  <p>By the end of the lab we'll have used <code>Docker</code> to package a <code>FastAPI</code> sentiment analysis API (serving a real model via <code>ONNX</code>) into a container, deployed it to <code>Azure</code>, and have it as a live endpoint.</p>
+  <p>By the end of the lab we'll have used <code>Docker</code> to package a <code>FastAPI</code> sentiment analysis API (serving a relatively simple encoder only model) into a container, deployed it to <code>Azure</code>, and have it as a live endpoint.</p>
   <p>We'll build the <code>Dockerfile</code> from scratch using multi-stage builds and <code>uv</code> for fast dependency installs, test locally, then push to <code>Azure Container Registry</code> and deploy on <code>Azure Container Apps</code>.</p>
 
   <h3>Learning Outcomes</h3>
@@ -530,7 +528,7 @@
       <p>Imagine you bake a cake in your kitchen and it turns out perfectly. You hand someone the recipe, but their oven runs hotter, their flour is a different brand, and they're missing one ingredient. They follow the same steps and get a completely different result. The process of trying to reliably deploy code, whether that's a simple application or a full AI and ML model, into production from your local development environment can be much like this cake analogy.</p>
       <br>
       <div style="text-align: center;">
-        <img src="it-works-on-my-machine.jpeg">
+        <img src="images/it-works-on-my-machine.jpeg">
       </div>
       <br>
       <p>A common problem we face arises when code behaves differently across machines due to mismatched Python or library versions. It might work on your machine, but not on someone else's. Things can get really complicated where projects have complex software stacks with strict version requirements such as TensorFlow tied to specific CUDA releases, or PyTorch conflicting with certain NumPy versions.</p>
@@ -564,7 +562,7 @@
       <p>Most of the time though, you'll be focusing on these three core elements and concepts of Docker: <code>dockerfiles</code>, <code>images</code>, and <code>containers</code>.</p>
       <br>
       <div style="text-align: center;">
-        <img src="docker-components.jpeg" style="max-width: 75%;">
+        <img src="images/docker-components.jpeg" style="max-width: 75%;">
       </div>
       <br>
 
@@ -666,7 +664,7 @@
       <h4>Lower costs</h4>
       <p>Container images sit in a registry. You're paying for that storage. You're also paying for bandwidth every time an image gets pulled. If you have a CI pipeline that builds and pushes on every commit, and you're running across multiple environments (dev, staging, production), those costs add up. A smaller image is cheaper to store and transfer.</p>
       <h4>Smaller attack surface</h4>
-      <p>Every piece of software in your image is a potential vulnerability. If your image includes a C compiler, and a CVE comes out for that compiler, your image is now flagged in security scans even though you never use the compiler at runtime. You have to rebuild and redeploy to clear the finding, or justify to your security team why it's there. If it's not in the image in the first place, the problem doesn't exist. Fewer packages means fewer things that can go wrong and fewer things you have to keep patched.</p>
+      <p>Every piece of software in your image is a potential vulnerability. If your image includes a C compiler, and a CVE comes out for that compiler, your image is now flagged in security scans even though you never use the compiler at runtime. You have to rebuild and redeploy to clear the finding, or justify to your security team why it's there. If it's not in the image in the first place, the problem doesn't exist.</p>
     </div>
 
     <div class="step">
@@ -678,7 +676,7 @@
       <p>But when it's time to actually pack the suitcase, you pick out the five or six things you're actually going to wear, fold them up, and put them in the bag. The scissors go back in the drawer. The iron goes back in the cupboard. The rejected outfits go back in the wardrobe. Your suitcase is small, light, and contains exactly what you need for the trip. Nobody looks at a packed suitcase and thinks "this should also contain the iron, just in case".</p>
       <br>
       <div style="text-align: center;">
-        <img src="giphy.gif">
+        <img src="images/giphy.gif">
       </div>
       <br>
       <p>A single-stage Docker build is like zipping up the entire bedroom and checking it as luggage. Everything you touched during the process comes with you: the tools, the rejected options, the mess. It's heavy, it's expensive to transport, and most of what's in there you'll never use. But because of how Docker layers work, you can't really take things back out once they're in. Even if you remove them in a later step, they're still in the bag, just hidden under other stuff. You're still paying for the weight.</p>
@@ -699,10 +697,15 @@
       <p>This ties directly into the non-root and smaller image points. Container scanning tools, for example Docker Scout analyse your image and flag known vulnerabilities in every package installed. OS-level packages, Python libraries, system utilities, all of it.</p>
       <p>The thing people don't expect the first time they run a scan is how many vulnerabilities come back. Even a basic <code>python:3.xx-slim</code> image will have dozens of findings, most of them in OS packages you've never heard of and your application never touches. A full <code>python:3.xx</code> image will have hundreds. And if you're deploying a single stage build with all your build tools still in there, you'll get a report that's genuinely overwhelming (trust me!) and full of critical and high severity findings in packages that exist in the image for no reason.</p>
       <p>This is where everything connects. Multi-stage builds will reduce the number of packages in your final image, which directly reduces the number of things a scanner can flag. Using as small an image as possible means fewer OS packages to begin with.</p>
-
+      <br>
+      <div style="text-align: center;">
+        <img src="images/cves_meme.jpg" style="max-width: 75%;">
+      </div>
       <div class="note tip">
         <div class="note-label">Tip</div>
         <p>None of this is about passing a scan with zero findings. That's nearly impossible and not really the goal. It's about keeping the noise manageable and liaising with relevant security teams to triage flagged vulnerabilities.</p>
+        <br>
+        <p>Also be mindful that while having a smaller image (and by extension less "stuff" in it) can lead to fewer CVEs, this isn't always the case. If you remove large dependencies from the image it can cause the remaining packages to resolve differently in their dependency trees.</p>
         <br>
         <p>You could investigate using <a href="https://www.docker.com/products/hardened-images/">hardened base images</a> which are deliberately stripped down to contain only what's absolutely necessary although the trade off is usability, meaning your Dockerfile has to be more precise because you can't rely on common utilities being there.</p>
       </div>
@@ -806,13 +809,15 @@
       <h4>Attempt 1: Simple version</h4>
       <p>I wrote the simplest possible Dockerfile first. Install PyTorch, load the model, serve it. It worked. But the image was 9.4GB.</p>
       <p>Why was it big? Well, the default PyTorch install from PyPI pulls in CUDA libraries - GPU drivers, cuDNN, the full NVIDIA runtime stack - even if you're deploying to a CPU only container. I was putting in hundreds of megabytes of GPU tooling that will literally never execute. Having an image this would mean slow builds (nearly 10 minutes), slow pulls, expensive storage and sluggish scale outs.</p>
-      <br>
-      <div style="text-align: center;">
-        <img src="original_build.png" style="max-width: 100%;">
-      </div>
       <div class="note">
         <div class="note-label">Note</div>
         <p>The DistilBERT model we are using is a PyTorch model (it was trained in PyTorch, its weights are stored in PyTorch's format, and loading it with Hugging Face's transformers library spins up a PyTorch model object) I knew I definitely needed PyTorch at runtime as this was the thing actually running the prediction.</p>
+      </div>
+      <div style="text-align: center;">
+        <img src="images/original_build.png" style="max-width: 100%;">
+      </div>
+      <div style="text-align: center;">
+        <img src="images/cves_original.png" style="max-width: 50%;">
       </div>
     </div>
 
@@ -823,7 +828,10 @@
       <p>That's a significant win for essentially zero code changes. But 2.5GB is still heavy, and the reason is that PyTorch itself is a large framework even without CUDA. I was still packing in an entire deep learning training framework just to run inference on a single small model. It's like bringing the whole kitchen to serve one dish.</p>
       <br>
       <div style="text-align: center;">
-        <img src="cpu_torch_build.png" style="max-width: 100%;">
+        <img src="images/cpu_torch_build.png" style="max-width: 100%;">
+      </div>
+      <div style="text-align: center;">
+        <img src="images/cves_torch_cpu.png" style="max-width: 50%;">
       </div>
     </div>
 
@@ -834,17 +842,17 @@
       <p>The model gets exported to ONNX format during the Docker build (in Stage 1, with PyTorch present), and the runtime image (Stage 2) only needs <code>onnxruntime</code>, which is a fraction of PyTorch's size. The final image droped to 1.5GB (a massive 85% reduction in size), and took only 90 seconds to build!</p>
       <br>
       <div style="text-align: center;">
-        <img src="onnx_build.png" style="max-width: 100%;">
+        <img src="images/onnx_build.png" style="max-width: 100%;">
       </div>
       <div style="text-align: center;">
-        <img src="image_sizes.png" style="max-width: 100%;">
+        <img src="images/image_sizes.png" style="max-width: 100%;">
       </div>
       <br>
       <p>The point here is that this is a normal engineering process. You don't arrive at the optimised version on day one. You start with "make it work," then you look at what you've built and ask what's unnecessarily heavy. Each iteration involved a tradeoff.</p>
-      <p>Despite the reduction in size though, there's still vulnerabilities in the image. In reality, this is where you'd go an investigate what they are, speak to the security folks to understand risk appetites etc prior to getting any relevant approval sign offs to use the image.</p>
+      <p>Despite the reduction in size though, there's still vulnerabilities in the image. And really the only improvement has been the removal of the criticals. In reality, this is where you'd go and investigate what they are, speak to the security folks to understand risk appetites and make decisions on how much you want to focus on reducing them further. As we've seen there's a pay off between trying to reduce image sizes, CVEs and potentially increasing complexity of how you write your Dockerfile and design the image to accomodate that.</p>
       <br>
       <div style="text-align: center;">
-        <img src="cves.png" style="max-width: 50%;">
+        <img src="images/cves_onnx.png" style="max-width: 50%;">
       </div>
     </div>
 
@@ -936,8 +944,22 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>Run</h4>
-      <p>Once the build finishes, run <code>docker run -p 8000:8000 bert-sentiment-api</code> to start a container from the image. The <code>-p 8000:8000</code> flag maps port 8000 on your machine to port 8000 inside the container. Without this, the API would be running but unreachable. Once you see the Uvicorn startup message in your terminal, open http://localhost:8000/docs in a browser to get FastAPI's interactive Swagger UI, where you can test the <code>/precit</code> endpoint directly.</p>
+      <p>Once the build finishes, run <code>docker run --name bert-api -p 8000:8000 bert-sentiment-api:version1</code> to start a container from the image. The <code>-p 8000:8000</code> flag maps port 8000 on your machine to port 8000 inside the container. Without this, the API would be running but unreachable. The <code>--name</code> flag just allows us to call our container a name, which will make it easier to stop in a moment (otherwise you'll get a default generated one). Once you see the Uvicorn startup message in your terminal, open http://localhost:8000/docs in a browser to get FastAPI's interactive Swagger UI, where you can test the <code>/predict</code> endpoint directly.</p>
+      <br>
+      <div style="text-align: center;">
+        <img src="images/onn_container_local_run.png" style="max-width: 100%;">
+      </div>
+      <div style="text-align: center;">
+        <img src="images/onnx_container_localhost.png" style="max-width: 100%;">
+      </div>
     </div>
+
+    <div class="step">
+      <div class="step-dot"></div>
+      <h4>Stop</h4>
+      <p>Once you've tried the local container, you can stop it with this command <code>docker stop bert-api</code>. If you don't stop the container, it'll just container running in the background and waste resources.
+    </div>
+
   </div>
 
   <!-- PHASE 9 — How to deploy to Azure -->
