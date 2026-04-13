@@ -1,6 +1,6 @@
 # Stage 1: Build + export model ------------------------------------------------
 
-FROM python:3.11-slim AS builder
+FROM python:3.13-slim AS builder
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
@@ -24,7 +24,7 @@ RUN uv pip install --no-cache --prefix=/runtime -r requirements-runtime.txt
 
 # Stage 2: Runtime image ------------------------------------------------------
 
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ WORKDIR /app
 RUN useradd --create-home appuser
 
 # Copy only runtime packages (no torch)
-COPY --from=builder /runtime/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /runtime/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /runtime/bin/uvicorn /usr/local/bin/uvicorn
 
 # Copy exported ONNX model
