@@ -2,7 +2,7 @@
 
 Docker from scratch: build, containerise, and deploy a real sentiment analysis model end to end.
 
-**Capgemini AI Engineering Training — Lab 1**
+**AI Engineering Training — Lab 1**
 
 ## Overview
 
