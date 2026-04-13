@@ -487,7 +487,7 @@
   <div class="prereq">
     <h3>Prerequisites</h3>
     <p><code>Docker Desktop</code> installed and running.</p>
-    <p><code>Python 3.11+</code> for local development (the container itself bundles its own Python).</p>
+    <p><code>Python 3.13+</code> for local development (the container itself bundles its own Python).</p>
     <p>A code editor such as <code>VS Code</code> with a terminal you're comfortable using.</p>
     <p><code>Azure CLI</code> installed (<code>az</code>) and authenticated with an active Azure subscription (personal or Capgemini).</p>
     <p><code>Git</code> installed, to clone the seminar repo containing the demo source files.</p>
@@ -496,7 +496,7 @@
 
   <!-- LAB OVERVIEW -->
   <h2>Lab Overview</h2>
-  <p>This lab introduces <code>Docker</code> as the foundational tool for packaging and deploying AI/ML applications and models. As we data scientists transition into AI and ML engineering roles for our clients, the ability to ship models as reliable and reproducible services becomes essential.</p>
+  <p>This lab introduces <code>Docker</code> as the foundational tool for packaging and deploying AI/ML applications and models. As we data scientists transition into AI and ML engineering roles for our clients, the ability to ship models and whole applications as reliable and reproducible services becomes essential.</p>
   <p>By the end of the lab we'll have used <code>Docker</code> to package a <code>FastAPI</code> sentiment analysis API (serving a relatively simple encoder only model) into a container, deployed it to <code>Azure</code>, and have it as a live endpoint.</p>
   <p>We'll build the <code>Dockerfile</code> from scratch using multi-stage builds and <code>uv</code> for fast dependency installs, test locally, then push to <code>Azure Container Registry</code> and deploy on <code>Azure Container Apps</code>.</p>
 
@@ -525,7 +525,7 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>The core problem: <em>"But it works on my machine..."</em></h4>
-      <p>Imagine you bake a cake in your kitchen and it turns out perfectly. You hand someone the recipe, but their oven runs hotter, their flour is a different brand, and they're missing one ingredient. They follow the same steps and get a completely different result. The process of trying to reliably deploy code, whether that's a simple application or a full AI and ML model, into production from your local development environment can be much like this cake analogy.</p>
+      <p>Imagine you bake a cake in your kitchen and it turns out perfectly. You hand someone the recipe, but their oven runs hotter, their flour is a different brand, and they're missing one ingredient. They follow the same steps and get a completely different result. The process of trying to reliably deploy code, whether that's an application or a full AI and ML model, into production from your local development environment can be much like this cake analogy.</p>
       <br>
       <div style="text-align: center;">
         <img src="images/it-works-on-my-machine.jpeg">
@@ -601,7 +601,7 @@
 
         <div class="note">
           <div class="note-label">Note</div>
-          <p>Base images range from bare-bones to full-featured. <code>alpine</code> is tiny (around 5MB) but can cause compatibility issues with Python packages that expect standard Linux libraries. <code>slim</code> variants like <code>python:3.xx-slim</code> strike a good balance — small enough to keep your image lean, complete enough that most packages install without fuss. The full python images include compilers and build tools, which is useful if your dependencies need to compile C extensions during install, but adds significant size.</p>
+          <p>Base images range from bare-bones to full-featured. <code>alpine</code> is tiny (around 5MB) but can cause compatibility issues with Python packages that expect standard Linux libraries. <code>slim</code> variants like <code>python:3.xx-slim</code> strike a good balance. They're small enough to keep your image lean, complete enough that most packages install without fuss. The full python images include compilers and build tools, which is useful if your dependencies need to compile C extensions during install, but adds significant size.</p>
         </div>
       </div>
 
@@ -694,7 +694,7 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>Scan for CVEs</h4>
-      <p>This ties directly into the non-root and smaller image points. Container scanning tools, for example Docker Scout analyse your image and flag known vulnerabilities in every package installed. OS-level packages, Python libraries, system utilities, all of it.</p>
+      <p>Container scanning tools, for example Docker Scout analyse your image and flag known vulnerabilities in every package installed. OS-level packages, Python libraries, system utilities, all of it.</p>
       <p>The thing people don't expect the first time they run a scan is how many vulnerabilities come back. Even a basic <code>python:3.xx-slim</code> image will have dozens of findings, most of them in OS packages you've never heard of and your application never touches. A full <code>python:3.xx</code> image will have hundreds. And if you're deploying a single stage build with all your build tools still in there, you'll get a report that's genuinely overwhelming (trust me!) and full of critical and high severity findings in packages that exist in the image for no reason.</p>
       <p>This is where everything connects. Multi-stage builds will reduce the number of packages in your final image, which directly reduces the number of things a scanner can flag. Using as small an image as possible means fewer OS packages to begin with.</p>
       <br>
@@ -793,7 +793,15 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>Why are we using DistilBERT?</h4>
-      <p>In a nutshell, because it's a real model (one of the most popular on HuggingFace) that sits in the sweet spot for teaching deployment. It's also not a toy scikit-learn classifier so the Docker and infrastructure patterns should be transferable to real work. It's also small enough to run on CPU, so we don't need to worry about GPUs, model sharding, or any of the complexity that comes with serving full LLMs.</p>
+      <p>In a nutshell, because it's a real model (one of the most popular on HuggingFace) that sits in the sweet spot for teaching deployment. It's also not a toy scikit-learn classifier so the Docker and infrastructure patterns should be transferable to real work. It's also small enough to run on CPU, so we don't need to worry about GPUs, model sharding, or any of the complexity that comes with serving full LLMs ourselves.</p>
+      <div class="note">
+        <div class="note-label">Note</div>
+        <p>In practice, most AI engineering work today involves calling a model through an API endpoint, whether that's calling GPT, Claude, or Gemini through a managed API or similar managed services, rather than downloading and serving a model yourself. You send text in, you get a response back, and the provider handles the infrastructure for the model. Images based on this pattern will usually be very small as there's no baked in model weights.</p>
+        <br>
+        <p>We've deliberately taken a different approach here by downloading a pre-trained model and packaging it into our container because it surfaces more of the engineering decisions you could face in production: dependency management, image size, multi-stage builds, and runtime optimisation.</p>
+        <br>
+        <p>These concerns don't disappear when you're calling an API, but they're easier to overlook. By working closer to the model, we get to confront them directly, and the patterns transfer to any containerised application, whether it's serving a model or wrapping an API.</p>
+      </div>
     </div>
   </div>
 
@@ -824,7 +832,7 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>Attempt 2: PyTorch CPU only</h4>
-      <p>The first optimisation was to install torch with the CPU-only index URL so I did'nt pull in CUDA. It was all the same code, the only change was how PyTorch got installed. It was much faster to build (2 minutes) and the image dropoed to 2.5GB!</p>
+      <p>The first optimisation was to install torch with the CPU-only index URL so I didn't pull in CUDA. It was all the same code, the only change was how PyTorch got installed. It was much faster to build (2 minutes) and the image dropoed to 2.5GB!</p>
       <p>That's a significant win for essentially zero code changes. But 2.5GB is still heavy, and the reason is that PyTorch itself is a large framework even without CUDA. I was still packing in an entire deep learning training framework just to run inference on a single small model. It's like bringing the whole kitchen to serve one dish.</p>
       <br>
       <div style="text-align: center;">
@@ -838,21 +846,21 @@
     <div class="step">
       <div class="step-dot"></div>
       <h4>Attempt 3: ONNX runtime</h4>
-      <p>This is where the real shift happened, and it's worth being honest that this one required actual work. I couldn't just swap a dependency, I had to change the model loading code, the inference code, and split my <code>requirements.txt</code> into build-time and runtime files.</p>
+      <p>This where there was some actual effort, and to be honest some failed attempts locally. I couldn't just swap a dependency, I had to change the model loading code, manually write the inference code (i.e. not just using the <code>transformers</code> wrapper), update my Python version in the base image as well as updating dependencies and split my <code>requirements.txt</code> into build-time and runtime files.</p>
       <p>The model gets exported to ONNX format during the Docker build (in Stage 1, with PyTorch present), and the runtime image (Stage 2) only needs <code>onnxruntime</code>, which is a fraction of PyTorch's size. The final image droped to 1.5GB (a massive 85% reduction in size), and took only 90 seconds to build!</p>
       <br>
       <div style="text-align: center;">
-        <img src="images/onnx_build.png" style="max-width: 100%;">
+        <img src="images/onnx_build_new.png" style="max-width: 100%;">
       </div>
       <div style="text-align: center;">
-        <img src="images/image_sizes.png" style="max-width: 100%;">
+        <img src="images/image_comparison.png" style="max-width: 100%;">
       </div>
       <br>
       <p>The point here is that this is a normal engineering process. You don't arrive at the optimised version on day one. You start with "make it work," then you look at what you've built and ask what's unnecessarily heavy. Each iteration involved a tradeoff.</p>
-      <p>Despite the reduction in size though, there's still vulnerabilities in the image. And really the only improvement has been the removal of the criticals. In reality, this is where you'd go and investigate what they are, speak to the security folks to understand risk appetites and make decisions on how much you want to focus on reducing them further. As we've seen there's a pay off between trying to reduce image sizes, CVEs and potentially increasing complexity of how you write your Dockerfile and design the image to accomodate that.</p>
+      <p>Despite the reduction in size though, there's still vulnerabilities in the image. And really the only improvement has been the removal of the criticals and a few highs. In reality, this is where you'd go and investigate what they are, speak to the security folks to understand risk appetites and make decisions on how much you want to focus on reducing them further. As we've seen there's a pay off between trying to reduce image sizes, CVEs and potentially increasing complexity of how you write your Dockerfile and design the image to accomodate that.</p>
       <br>
       <div style="text-align: center;">
-        <img src="images/cves_onnx.png" style="max-width: 50%;">
+        <img src="images/onnx_cves.png" style="max-width: 50%;">
       </div>
     </div>
 
@@ -863,7 +871,7 @@
 
       <div class="step">
         <div class="step-dot"></div>
-        <h4><code>FROM python:3.11-slim AS builder</code></h4>
+        <h4><code>FROM python:3.13-slim AS builder</code></h4>
         <p>A slim version of Python was chosen rather than alpine or the full image as the base, and the <code>AS</code> builder alias is what makes multi-stage work; it gives this stage a name so Stage 2 can selectively copy from it.</p>
       </div>
 
