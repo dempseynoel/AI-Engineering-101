@@ -1,6 +1,6 @@
 # AI Engineering Training Programme
 
-**April – October 2026 | Capgemini Invent**
+**April – October 2026**
 
 A six-month programme designed to upskill our teams in AI engineering, taking participants from cloud and containerisation fundamentals through to building and deploying production-grade AI systems.
 
@@ -40,8 +40,3 @@ The programme aligns with industry credentials so that learning time counts towa
 ## Getting Started
 
 Each lab folder contains its own README with prerequisites, setup instructions, and exercises. Start with the April lab and work through in order.
-
-## Programme Lead
-
-Shivam Desai — with the Model Ops Discipline & AI Engineering Upskilling Working Group.
-
