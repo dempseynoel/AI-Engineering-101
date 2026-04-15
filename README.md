@@ -24,7 +24,7 @@ This repository is the central home for all labs, case studies, and supporting m
 
 ## How the Programme Works
 
-Each month (April–July) follows the same rhythm: a vendor-led demonstration, a hands-on lab, a Capgemini case study grounded in realistic client scenarios, and a small homework assignment. One in-office day per month is protected for learning. Everything is designed to fit within office hours.
+Each month (April–July) follows the same rhythm: a vendor-led demonstration, a hands-on lab, a case study grounded in realistic client scenarios, and a small homework assignment. One in-office day per month is protected for learning. Everything is designed to fit within office hours.
 
 The programme culminates in a two-month hackathon (September–October) where small pods build end-to-end AI solutions and present them to a mixed vendor panel.
 
